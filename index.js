@@ -10,6 +10,14 @@ try {
   process.exit(1);
 }
 
+let config;
+try {
+  config = JSON.parse(fs.readFileSync("config.json", "utf8"));
+} catch (err) {
+  console.error("❌ config.json is missing or malformed.", err);
+  process.exit(1);
+}
+
 console.log("Logging in...");
 
 login(credentials, {
@@ -35,7 +43,7 @@ login(credentials, {
     }
   }
 
-  const PREFIX = "!";
+  const PREFIX = config.prefix || "!";
 
   api.listenMqtt(async (err, event) => {
     if (err || !event.body || event.type !== "message") return;
@@ -65,6 +73,10 @@ login(credentials, {
         api.sendMessage("❌ Error processing your command.", event.threadID, event.messageID);
       }
     } else {
+      if (hasPrefix) {
+        return api.sendMessage(config.invalidCommandMessage || "❌ Invalid command.", event.threadID, event.messageID);
+      }
+      
       const aiCommand = commands.get("ai");
       if (!aiCommand) return console.error("⚠️ AI command not loaded.");
       try {

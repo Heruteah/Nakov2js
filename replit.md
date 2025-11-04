@@ -1,6 +1,6 @@
 # Overview
 
-This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features a modular command system with both prefix-based and prefix-free commands, enabling users to interact with an AI assistant and access help documentation through Facebook Messenger.
+This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features a modular command system with prefix-based commands, including help documentation, prefix display, and AI-powered image generation through Facebook Messenger.
 
 # User Preferences
 
@@ -39,9 +39,10 @@ Preferred communication style: Simple, everyday language.
 - Commands stored in a Map for O(1) lookup performance
 
 **Key Design Decisions**:
-1. **Dual Command Modes**: Supports both prefix-required commands (`!help`) and prefix-free commands (`ai`) via `usePrefix` flag
+1. **Prefix-Based Commands**: All commands require the configurable prefix (default: `!`) via `usePrefix: true` flag
 2. **Self-Listen Disabled**: Bot ignores its own messages to prevent infinite loops
 3. **Message Filtering**: Only processes "message" type events with body content from other users
+4. **No Fallback Behavior**: Non-prefixed messages are ignored (Updated November 4, 2025)
 
 ## Command Module System
 
@@ -83,7 +84,7 @@ Preferred communication style: Simple, everyday language.
 4. Extract command name and arguments
 5. Validate prefix usage against command requirements
 6. Route to appropriate command handler or show validation error
-7. Execute command with standardized context or fallback to AI
+7. Execute command with standardized context
 
 **Prefix Handling Logic**:
 - Prefix is configurable via `config.json` (default: `!`)
@@ -91,16 +92,17 @@ Preferred communication style: Simple, everyday language.
 - Prefix-free commands match without prefix check
 - Arguments extracted via space-splitting with empty value filtering
 
-**Prefix Validation** (Added November 4, 2025):
+**Prefix Validation** (Updated November 4, 2025):
 - If command requires prefix but user doesn't use it: Returns "This command uses a prefix"
 - If command doesn't require prefix but user uses it: Returns "This command doesn't use prefix"
-- Commands must explicitly set `usePrefix: true` or `usePrefix: false`
+- All current commands use `usePrefix: true`
 - Prefixed unknown commands show configurable invalid command message
-- Non-prefixed unknown messages fall back to AI handler for conversational responses
+- Non-prefixed messages are ignored (no fallback behavior)
 
-**Current Commands**:
-- `!help` - Shows available commands (requires prefix, `usePrefix: true`)
-- `ai` - Chat with AI assistant (no prefix needed, `usePrefix: false`)
+**Current Commands** (Updated November 4, 2025):
+- `!help` - Shows available commands with usage examples
+- `!prefix` - Displays the current command prefix from config
+- `!poli <prompt>` - Generates images using Pollinations AI (flux model)
 
 # External Dependencies
 
@@ -113,8 +115,8 @@ Preferred communication style: Simple, everyday language.
 
 **axios** (v1.13.1)
 - Purpose: HTTP client for making API requests
-- Usage: AI command makes GET requests to external AI service
-- Endpoint: `https://api-library-kohi.onrender.com/api/copilot`
+- Usage: Poli command makes GET requests to image generation API
+- Endpoint: `https://api-library-kohi.onrender.com/api/pollinations`
 
 **@types/node** (v22.13.11)
 - Purpose: TypeScript type definitions for Node.js
@@ -122,13 +124,14 @@ Preferred communication style: Simple, everyday language.
 
 ## External API Services
 
-**Copilot AI API**
-- Endpoint: `https://api-library-kohi.onrender.com/api/copilot`
-- Model: GPT-5
-- Parameters: `prompt`, `model`, `user` (sender ID)
-- Response Format: `{ status, data: { text } }`
-- Purpose: Provides AI-powered conversational responses
-- Used By: `ai` command module
+**Pollinations AI API** (Added November 4, 2025)
+- Endpoint: `https://api-library-kohi.onrender.com/api/pollinations`
+- Model: flux
+- Parameters: `prompt` (image description), `model` (AI model name)
+- Response Format: `{ status, data: "<base64 image data>" }`
+- Purpose: Generates images from text prompts using AI
+- Used By: `poli` command module
+- Image Format: Returns JPEG image as base64-encoded string
 
 ## Platform Dependencies
 
@@ -140,12 +143,13 @@ Preferred communication style: Simple, everyday language.
 
 ## File System Dependencies
 
-**config.json** (Required, Added November 4, 2025)
+**config.json** (Required, Updated November 4, 2025)
 - Format: JSON object with bot configuration
 - Contains:
   - `prefix`: Command prefix character (default: `!`)
   - `invalidCommandMessage`: Message shown for invalid prefixed commands
   - `botName`: Bot name for future use
+  - `admin`: Array of admin user IDs for future admin-only commands
 - Purpose: Centralized configuration for bot behavior
 - Security: Can be committed to version control (no sensitive data)
 - Example:
@@ -153,7 +157,8 @@ Preferred communication style: Simple, everyday language.
   {
     "prefix": "!",
     "invalidCommandMessage": "❌ Invalid command. Type !help to see available commands.",
-    "botName": "Facebook Bot"
+    "botName": "Facebook Bot",
+    "admin": []
   }
   ```
 

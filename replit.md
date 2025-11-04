@@ -39,10 +39,10 @@ Preferred communication style: Simple, everyday language.
 - Commands stored in a Map for O(1) lookup performance
 
 **Key Design Decisions**:
-1. **Prefix-Based Commands**: All commands require the configurable prefix (default: `!`) via `usePrefix: true` flag
+1. **Dual Command Modes**: Supports both prefix-required commands (`!help`, `!poli`) and prefix-free commands (`ai`, `prefix`) via `usePrefix` flag
 2. **Self-Listen Disabled**: Bot ignores its own messages to prevent infinite loops
 3. **Message Filtering**: Only processes "message" type events with body content from other users
-4. **No Fallback Behavior**: Non-prefixed messages are ignored (Updated November 4, 2025)
+4. **No Fallback Behavior**: Non-prefixed messages that don't match a command are ignored (Updated November 4, 2025)
 
 ## Command Module System
 
@@ -95,14 +95,15 @@ Preferred communication style: Simple, everyday language.
 **Prefix Validation** (Updated November 4, 2025):
 - If command requires prefix but user doesn't use it: Returns "This command uses a prefix"
 - If command doesn't require prefix but user uses it: Returns "This command doesn't use prefix"
-- All current commands use `usePrefix: true`
+- Commands must explicitly set `usePrefix: true` or `usePrefix: false`
 - Prefixed unknown commands show configurable invalid command message
-- Non-prefixed messages are ignored (no fallback behavior)
+- Non-prefixed unknown messages are ignored (no response)
 
 **Current Commands** (Updated November 4, 2025):
-- `!help` - Shows available commands with usage examples
-- `!prefix` - Displays the current command prefix from config
-- `!poli <prompt>` - Generates images using Pollinations AI (flux model)
+- `!help` - Shows available commands with usage examples (requires prefix)
+- `!poli <prompt>` - Generates images using Pollinations AI (requires prefix)
+- `ai <question>` - Chat with AI assistant (no prefix needed)
+- `prefix` - Displays the current command prefix (no prefix needed)
 
 # External Dependencies
 
@@ -115,14 +116,22 @@ Preferred communication style: Simple, everyday language.
 
 **axios** (v1.13.1)
 - Purpose: HTTP client for making API requests
-- Usage: Poli command makes GET requests to image generation API
-- Endpoint: `https://api-library-kohi.onrender.com/api/pollinations`
+- Usage: Used by both AI and Poli commands for API requests
+- Endpoints: Copilot AI API and Pollinations API
 
 **@types/node** (v22.13.11)
 - Purpose: TypeScript type definitions for Node.js
 - Usage: Development dependency for IDE support
 
 ## External API Services
+
+**Copilot AI API**
+- Endpoint: `https://api-library-kohi.onrender.com/api/copilot`
+- Model: GPT-5
+- Parameters: `prompt`, `model`, `user` (sender ID)
+- Response Format: `{ status, data: { text } }`
+- Purpose: Provides AI-powered conversational responses
+- Used By: `ai` command module
 
 **Pollinations AI API** (Added November 4, 2025)
 - Endpoint: `https://api-library-kohi.onrender.com/api/pollinations`

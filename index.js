@@ -76,15 +76,6 @@ login(credentials, {
       if (hasPrefix) {
         return api.sendMessage(config.invalidCommandMessage || "❌ Invalid command.", event.threadID, event.messageID);
       }
-      
-      const aiCommand = commands.get("ai");
-      if (!aiCommand) return console.error("⚠️ AI command not loaded.");
-      try {
-        await aiCommand.execute({ api, event, args: [messageBody] });
-      } catch (error) {
-        console.error("Error in AI command:", error);
-        api.sendMessage("❌ Error processing your message.", event.threadID, event.messageID);
-      }
     }
   });
 });

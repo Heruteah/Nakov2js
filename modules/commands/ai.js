@@ -3,6 +3,7 @@ const axios = require("axios");
 module.exports = {
   name: "ai",
   description: "Chat with AI freely, no prefix needed.",
+  usePrefix: false,
   async execute({ api, event, args }) {
     const prompt = args.join(" ").trim();
 

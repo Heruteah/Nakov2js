@@ -35,16 +35,44 @@ login(credentials, {
     }
   }
 
+  const PREFIX = "!";
+
   api.listenMqtt(async (err, event) => {
     if (err || !event.body || event.type !== "message") return;
     if (event.senderID === api.getCurrentUserID()) return;
-    const aiCommand = commands.get("ai");
-    if (!aiCommand) return console.error("⚠️ AI command not loaded.");
-    try {
-      await aiCommand.execute({ api, event, args: [event.body] });
-    } catch (error) {
-      console.error("Error in AI command:", error);
-      api.sendMessage("❌ Error processing your message.", event.threadID, event.messageID);
+
+    const messageBody = event.body.trim();
+    const hasPrefix = messageBody.startsWith(PREFIX);
+    const withoutPrefix = hasPrefix ? messageBody.slice(PREFIX.length).trim() : messageBody;
+    const commandName = withoutPrefix.split(" ")[0].toLowerCase();
+    const args = withoutPrefix.slice(commandName.length).trim().split(" ").filter(Boolean);
+
+    let command = commands.get(commandName);
+
+    if (command) {
+      if (command.usePrefix && !hasPrefix) {
+        return api.sendMessage("This command uses a prefix", event.threadID, event.messageID);
+      }
+      
+      if (!command.usePrefix && hasPrefix) {
+        return api.sendMessage("This command doesn't use prefix", event.threadID, event.messageID);
+      }
+
+      try {
+        await command.execute({ api, event, args });
+      } catch (error) {
+        console.error(`Error in ${commandName} command:`, error);
+        api.sendMessage("❌ Error processing your command.", event.threadID, event.messageID);
+      }
+    } else {
+      const aiCommand = commands.get("ai");
+      if (!aiCommand) return console.error("⚠️ AI command not loaded.");
+      try {
+        await aiCommand.execute({ api, event, args: [messageBody] });
+      } catch (error) {
+        console.error("Error in AI command:", error);
+        api.sendMessage("❌ Error processing your message.", event.threadID, event.messageID);
+      }
     }
   });
 });

@@ -86,7 +86,7 @@ Preferred communication style: Simple, everyday language.
 7. Execute command with standardized context or fallback to AI
 
 **Prefix Handling Logic**:
-- Default prefix: `!`
+- Prefix is configurable via `config.json` (default: `!`)
 - Whitespace handling: Trims spaces after prefix (e.g., `!   help` works correctly)
 - Prefix-free commands match without prefix check
 - Arguments extracted via space-splitting with empty value filtering
@@ -95,7 +95,8 @@ Preferred communication style: Simple, everyday language.
 - If command requires prefix but user doesn't use it: Returns "This command uses a prefix"
 - If command doesn't require prefix but user uses it: Returns "This command doesn't use prefix"
 - Commands must explicitly set `usePrefix: true` or `usePrefix: false`
-- Unmatched commands fall back to AI handler for conversational responses
+- Prefixed unknown commands show configurable invalid command message
+- Non-prefixed unknown messages fall back to AI handler for conversational responses
 
 **Current Commands**:
 - `!help` - Shows available commands (requires prefix, `usePrefix: true`)
@@ -138,6 +139,23 @@ Preferred communication style: Simple, everyday language.
 - Features Used: Message sending, editing, thread management, user identification
 
 ## File System Dependencies
+
+**config.json** (Required, Added November 4, 2025)
+- Format: JSON object with bot configuration
+- Contains:
+  - `prefix`: Command prefix character (default: `!`)
+  - `invalidCommandMessage`: Message shown for invalid prefixed commands
+  - `botName`: Bot name for future use
+- Purpose: Centralized configuration for bot behavior
+- Security: Can be committed to version control (no sensitive data)
+- Example:
+  ```json
+  {
+    "prefix": "!",
+    "invalidCommandMessage": "❌ Invalid command. Type !help to see available commands.",
+    "botName": "Facebook Bot"
+  }
+  ```
 
 **appstate.json** (Required)
 - Format: JSON array of cookie objects

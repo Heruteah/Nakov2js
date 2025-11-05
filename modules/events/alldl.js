@@ -34,12 +34,13 @@ module.exports = {
       const BotpackConsole = require("../../utils/console");
       BotpackConsole.download(platform, event.senderID);
       
-      // Send processing message
+      // Send processing message (without reply to get message object back)
       const processingMsg = await api.sendMessage(
         `📥 Detected ${platform} link! Downloading video...`,
-        event.threadID,
-        event.messageID
+        event.threadID
       );
+      
+      let videoPath = null;
       
       try {
         // Call the API
@@ -47,11 +48,14 @@ module.exports = {
         const response = await axios.get(apiUrl, { timeout: 60000 });
         
         if (!response.data || !response.data.status || !response.data.data || !response.data.data.videoUrl) {
-          return api.editMessage(
-            `❌ Failed to download ${platform} video. Please try again later.`,
-            processingMsg.messageID,
-            event.threadID
-          );
+          if (processingMsg && processingMsg.messageID) {
+            api.editMessage(
+              `❌ Failed to download ${platform} video. Please try again later.`,
+              processingMsg.messageID,
+              event.threadID
+            );
+          }
+          return;
         }
         
         const videoUrl = response.data.data.videoUrl;
@@ -67,7 +71,7 @@ module.exports = {
         const tempDir = path.join(__dirname, "../../temp");
         if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
         
-        const videoPath = path.join(tempDir, `alldl_${Date.now()}.mp4`);
+        videoPath = path.join(tempDir, `alldl_${Date.now()}.mp4`);
         fs.writeFileSync(videoPath, videoResponse.data);
         
         // Send the video
@@ -81,22 +85,43 @@ module.exports = {
         );
         
         // Delete processing message
-        api.unsendMessage(processingMsg.messageID);
+        if (processingMsg && processingMsg.messageID) {
+          api.unsendMessage(processingMsg.messageID);
+        }
         
         // Clean up video file after 5 seconds
         setTimeout(() => {
-          if (fs.existsSync(videoPath)) {
+          if (videoPath && fs.existsSync(videoPath)) {
             fs.unlinkSync(videoPath);
           }
         }, 5000);
         
       } catch (error) {
         console.error("Auto-download error:", error.message);
-        api.editMessage(
-          `❌ Error downloading ${platform} video: ${error.message}`,
-          processingMsg.messageID,
-          event.threadID
-        );
+        
+        // Clean up temp file on error
+        if (videoPath && fs.existsSync(videoPath)) {
+          try {
+            fs.unlinkSync(videoPath);
+          } catch (cleanupError) {
+            console.error("Error cleaning up temp file:", cleanupError.message);
+          }
+        }
+        
+        // Update or send error message
+        if (processingMsg && processingMsg.messageID) {
+          api.editMessage(
+            `❌ Error downloading ${platform} video: ${error.message}`,
+            processingMsg.messageID,
+            event.threadID
+          );
+        } else {
+          api.sendMessage(
+            `❌ Error downloading ${platform} video: ${error.message}`,
+            event.threadID,
+            event.messageID
+          );
+        }
       }
       
     } catch (error) {

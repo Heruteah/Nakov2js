@@ -234,6 +234,8 @@ project/
 ├── appstate.json              # Facebook session cookies
 ├── package.json               # Dependencies
 ├── README.md                  # This file
+├── utils/
+│   └── console.js             # Botpack-style console interface
 └── modules/
     ├── commands/              # Command files
     │   ├── ai.js
@@ -245,7 +247,8 @@ project/
     └── events/                # Event handlers
         ├── welcome.js
         ├── leavenoti.js
-        └── jointnoti.js
+        ├── jointnoti.js
+        └── alldl.js           # Auto-download videos
 ```
 
 ## Adding New Commands
@@ -277,6 +280,26 @@ project/
 - ✅ Helper functions for quick replies
 - ✅ Individual cooldown per command
 - ✅ Error handling
+- ✅ Botpack-style colorful console interface
+- ✅ Auto-download videos from Facebook and TikTok links
+- ✅ Event-based automation (welcome, leave, join notifications)
+
+## Auto-Download Feature
+
+The bot automatically detects and downloads videos from:
+- **Facebook**: facebook.com, fb.watch, m.facebook.com
+- **TikTok**: tiktok.com, vt.tiktok.com, vm.tiktok.com
+
+Just send a link to a video in the chat, and the bot will automatically download and send it!
+
+## Console Interface
+
+The bot features a Botpack-style console with:
+- 🎨 ASCII art banner
+- 🌈 Color-coded log levels
+- 📊 System information display
+- 📝 Command and event tracking
+- ⚡ Real-time execution logs
 
 ## Notes
 

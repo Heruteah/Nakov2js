@@ -1,6 +1,6 @@
 # Overview
 
-This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features a modular command system with prefix-based commands, including help documentation, prefix display, AI-powered image generation, and event handlers for welcoming users, notifying on leave, and automatically setting bot nickname when joining threads.
+This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features a modular command system with prefix-based commands, a Botpack-style colorful console interface, automatic video downloads from Facebook and TikTok links, and event handlers for welcoming users, notifying on leave, and automatically setting bot nickname when joining threads.
 
 # User Preferences
 
@@ -127,6 +127,14 @@ Preferred communication style: Simple, everyday language.
    - Sends introduction message explaining bot's purpose
    - Automatically changes bot's nickname to configured value using api.nickname()
    - Logs nickname change success/failure
+
+4. **alldl** (message event) - Auto-downloads videos from social media links (Added November 5, 2025)
+   - Automatically detects Facebook and TikTok video links in messages
+   - Downloads and sends the video to the chat
+   - Supported platforms: Facebook (facebook.com, fb.watch, m.facebook.com), TikTok (tiktok.com, vt.tiktok.com, vm.tiktok.com)
+   - API Endpoint: `https://api-library-kohi.onrender.com/api/alldl`
+   - Response includes video URL and platform name
+   - Automatically cleans up downloaded files after 5 seconds
 
 **Event Processing**:
 - Event type detection: Distinguishes between "message" and "event" types
@@ -273,6 +281,18 @@ Preferred communication style: Simple, everyday language.
 **modules/events/** (Directory Structure, Added November 5, 2025)
 - Expected Location: `./modules/events/`
 - Auto-created if missing
-- Contains: Individual event module .js files (welcome.js, leavenoti.js, jointnoti.js)
+- Contains: Individual event module .js files (welcome.js, leavenoti.js, jointnoti.js, alldl.js)
 - Loaded: At bot startup via dynamic require()
-- Purpose: Handles Facebook Messenger log events (user join/leave)
+- Purpose: Handles Facebook Messenger log events (user join/leave) and message events (auto-download)
+
+**utils/console.js** (Console Interface, Added November 5, 2025)
+- Purpose: Botpack-style console design with colors and visual elements
+- Features:
+  - ASCII art banner with bot branding
+  - Color-coded log levels (success, error, info, warning)
+  - Visual separators for better readability
+  - System info display (platform, Node version, memory usage)
+  - Command and event loading indicators
+  - Execution tracking with user IDs
+  - Download event logging
+- ANSI color codes used for terminal output styling

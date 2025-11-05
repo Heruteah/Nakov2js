@@ -1,6 +1,3 @@
-const chalk = require('chalk');
-const gradient = require('gradient-string');
-
 const COLORS = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',

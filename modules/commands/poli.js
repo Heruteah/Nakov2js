@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
   name: "poli",
-  description: "Generate an image using Pollinations AI.",
+  description: "Generate an image using Pollinations ai.",
   usePrefix: true,
   async execute({ api, event, args }) {
     const prompt = args.join(" ").trim();
@@ -19,7 +19,7 @@ module.exports = {
       const res = await axios.get(url);
 
       if (!res.data || !res.data.status || !res.data.data) {
-        return api.editMessage("⚠️ Failed to generate image. Please try again.", waitingMsg.messageID, event.threadID);
+        return api.editMessage("⚠️ failed to generate image. Please try again.", waitingMsg.messageID, event.threadID);
       }
 
       const base64Data = res.data.data.replace(/^data:image\/\w+;base64,/, "");

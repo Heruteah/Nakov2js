@@ -8,12 +8,12 @@ module.exports = {
     const prompt = args.join(" ").trim();
 
     if (!prompt || prompt.toLowerCase() === "ai") {
-      return api.sendMessage("🤖 Please provide a question first.", event.threadID, event.messageID);
+      return api.sendMessage("Please provide a question first.", event.threadID, event.messageID);
     }
 
     try {
       const user = event.senderID;
-      const waitingMsg = await api.sendMessage("⏳ Thinking...", event.threadID);
+      const waitingMsg = await api.sendMessage("⏳ Searching...", event.threadID);
       const url = `https://api-library-kohi.onrender.com/api/copilot?prompt=${encodeURIComponent(prompt)}&model=gpt-5&user=${user}`;
       const res = await axios.get(url);
 

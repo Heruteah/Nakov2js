@@ -1,19 +1,19 @@
 module.exports = {
-  name: "uid",
-  description: "Get your Facebook user ID",
-  usePrefix: true,
-  async execute({ api, event, args }) {
+  config: {
+    name: "uid",
+    description: "Get your Facebook user ID",
+    usage: "uid",
+    cooldown: 3,
+    role: 0,
+    prefix: true
+  },
+  run: async (api, event, args, reply, react) => {
     try {
       const userID = event.senderID;
-      
-      await api.sendMessage(
-        `👤 Your Facebook User ID:\n${userID}`,
-        event.threadID,
-        event.messageID
-      );
+      reply(`👤 Your Facebook User ID:\n${userID}`);
     } catch (err) {
       console.error("UID Command Error:", err);
-      api.sendMessage("❌ Error retrieving your user ID.", event.threadID, event.messageID);
+      reply("❌ Error retrieving your user ID.");
     }
   }
 };

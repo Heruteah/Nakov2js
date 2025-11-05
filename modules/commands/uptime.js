@@ -1,8 +1,13 @@
 module.exports = {
-  name: "uptime",
-  description: "Shows how long the bot has been running (requires prefix).",
-  usePrefix: true,
-  async execute({ api, event, args }) {
+  config: {
+    name: "uptime",
+    description: "Shows how long the bot has been running",
+    usage: "uptime",
+    cooldown: 5,
+    role: 0,
+    prefix: true
+  },
+  run: async (api, event, args, reply, react) => {
     const uptime = Date.now() - global.botStartTime;
     const startDate = new Date(global.botStartTime);
     
@@ -48,6 +53,6 @@ module.exports = {
     uptimeMessage += "👨‍💻 Developer: ioa39rkdev\n";
     uptimeMessage += "━━━━━━━━━━━━━━━━━━━━━━━";
     
-    api.sendMessage(uptimeMessage, event.threadID, event.messageID);
+    reply(uptimeMessage);
   }
 };

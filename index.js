@@ -39,9 +39,9 @@ login(credentials, {
 
   for (const file of fs.readdirSync(commandsDir).filter(f => f.endsWith(".js"))) {
     const command = require(path.join(commandsDir, file));
-    if (command.name && typeof command.execute === "function") {
-      commands.set(command.name, command);
-      console.log(`🔧 Loaded command: ${command.name}`);
+    if (command.config && command.config.name && typeof command.run === "function") {
+      commands.set(command.config.name, command);
+      console.log(`🔧 Loaded command: ${command.config.name}`);
     }
   }
 
@@ -59,7 +59,6 @@ login(credentials, {
   }
 
   const PREFIX = config.prefix || "!";
-  const cooldownTime = (config.cooldownTime || 3) * 1000;
   const userCooldowns = new Map();
 
   api.listenMqtt(async (err, event) => {
@@ -78,16 +77,17 @@ login(credentials, {
       let command = commands.get(commandName);
 
       if (command) {
-        if (command.usePrefix && !hasPrefix) {
+        if (command.config.prefix && !hasPrefix) {
           return api.sendMessage("This command uses a prefix", event.threadID, event.messageID);
         }
         
-        if (!command.usePrefix && hasPrefix) {
+        if (!command.config.prefix && hasPrefix) {
           return api.sendMessage("This command doesn't use prefix", event.threadID, event.messageID);
         }
 
         const now = Date.now();
         const cooldownKey = `${event.senderID}_${commandName}`;
+        const cooldownTime = (command.config.cooldown || 3) * 1000;
         
         if (userCooldowns.has(cooldownKey)) {
           const expirationTime = userCooldowns.get(cooldownKey) + cooldownTime;
@@ -100,8 +100,18 @@ login(credentials, {
 
         userCooldowns.set(cooldownKey, now);
 
+        const reply = (message) => {
+          return api.sendMessage(message, event.threadID, event.messageID);
+        };
+
+        const react = (emoji) => {
+          return api.setMessageReaction(emoji, event.messageID, (err) => {
+            if (err) console.error("React error:", err);
+          }, true);
+        };
+
         try {
-          await command.execute({ api, event, args });
+          await command.run(api, event, args, reply, react);
         } catch (error) {
           console.error(`Error in ${commandName} command:`, error);
           api.sendMessage("❌ Error processing your command.", event.threadID, event.messageID);

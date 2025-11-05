@@ -3,14 +3,19 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports = {
-  name: "poli",
-  description: "Generate an image using Pollinations ai.",
-  usePrefix: true,
-  async execute({ api, event, args }) {
+  config: {
+    name: "poli",
+    description: "Generate an image using Pollinations AI",
+    usage: "poli <prompt>",
+    cooldown: 10,
+    role: 0,
+    prefix: true
+  },
+  run: async (api, event, args, reply, react) => {
     const prompt = args.join(" ").trim();
 
     if (!prompt) {
-      return api.sendMessage("🎨 Please provide a prompt for image generation.\n\nExample: !poli beautiful sunset over mountains", event.threadID, event.messageID);
+      return reply("🎨 Please provide a prompt for image generation.\n\nExample: !poli beautiful sunset over mountains");
     }
 
     try {
@@ -19,7 +24,7 @@ module.exports = {
       const res = await axios.get(url);
 
       if (!res.data || !res.data.status || !res.data.data) {
-        return api.editMessage("⚠️ failed to generate image. Please try again.", waitingMsg.messageID, event.threadID);
+        return api.editMessage("⚠️ Failed to generate image. Please try again.", waitingMsg.messageID, event.threadID);
       }
 
       const base64Data = res.data.data.replace(/^data:image\/\w+;base64,/, "");
@@ -45,7 +50,7 @@ module.exports = {
       }, 5000);
     } catch (err) {
       console.error("Poli Command Error:", err);
-      api.sendMessage("❌ Error generating image. Please try again later.", event.threadID, event.messageID);
+      reply("❌ Error generating image. Please try again later.");
     }
   }
 };

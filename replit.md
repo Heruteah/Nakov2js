@@ -44,32 +44,48 @@ Preferred communication style: Simple, everyday language.
 3. **Message Filtering**: Only processes "message" type events with body content from other users
 4. **No Fallback Behavior**: Non-prefixed messages that don't match a command are ignored (Updated November 4, 2025)
 
-## Command Module System
+## Command Module System (Updated November 5, 2025)
 
 **Problem**: Need flexible command registration without modifying core bot logic.
 
-**Solution**: Plugin-style command modules with standardized interface.
+**Solution**: Plugin-style command modules with standardized interface using config/run pattern.
 
 **Command Structure**:
 ```javascript
 {
-  name: string,           // Command identifier
-  description: string,    // Command documentation
-  usePrefix: boolean,     // Whether command requires "!" prefix
-  execute: function       // Command handler with { api, event, args }
+  config: {
+    name: string,           // Command identifier
+    description: string,    // Command documentation
+    usage: string,          // Usage example
+    cooldown: number,       // Cooldown in seconds
+    role: number,           // Permission level (0=everyone, 1=admin)
+    prefix: boolean         // Whether command requires "!" prefix
+  },
+  run: function             // Command handler with (api, event, args, reply, react)
 }
 ```
 
 **Command Discovery**: 
 - Scans `modules/commands/` directory at startup
 - Auto-loads all `.js` files
-- Validates command structure before registration
+- Validates command structure (config.name and run function) before registration
 - Logs loaded commands for debugging
+
+**Helper Functions**:
+- `reply(message)` - Quick reply function
+- `react(emoji)` - React to message with emoji
+
+**Per-Command Features**:
+- Individual cooldown times configurable per command
+- Role-based permissions (0 = everyone, 1 = admin)
+- Prefix/non-prefix mode per command
 
 **Pros**:
 - Easy to add new commands without touching core code
 - Commands are self-contained and testable
 - Clear separation of concerns
+- Flexible per-command configuration
+- Helper functions simplify common operations
 
 **Cons**:
 - No hot-reload capability (requires bot restart)

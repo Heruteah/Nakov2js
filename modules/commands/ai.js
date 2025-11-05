@@ -1,14 +1,19 @@
 const axios = require("axios");
 
 module.exports = {
-  name: "ai",
-  description: "Chat with AI freely, no prefix needed.",
-  usePrefix: false,
-  async execute({ api, event, args }) {
+  config: {
+    name: "ai",
+    description: "Chat with AI freely, no prefix needed.",
+    usage: "ai <question>",
+    cooldown: 3,
+    role: 0,
+    prefix: false
+  },
+  run: async (api, event, args, reply, react) => {
     const prompt = args.join(" ").trim();
 
     if (!prompt || prompt.toLowerCase() === "ai") {
-      return api.sendMessage("Please provide a question first.", event.threadID, event.messageID);
+      return reply("Please provide a question first.");
     }
 
     try {
@@ -25,7 +30,7 @@ module.exports = {
       api.editMessage(text, waitingMsg.messageID, event.threadID);
     } catch (err) {
       console.error("AI Command Error:", err);
-      api.sendMessage("❌ Error contacting the AI API.", event.threadID, event.messageID);
+      reply("❌ Error contacting the AI API.");
     }
   }
 };

@@ -2,7 +2,5 @@
   "prefix": "!",
   "invalidCommandMessage": "❌ Invalid command. Type !help to see available commands.",
   "botName": "Facebook Bot",
-  "botNickname": "🤖 Bot",
-  "cooldownTime": 3,
   "admin": ["100077070762554"]
 }

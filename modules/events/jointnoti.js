@@ -15,10 +15,10 @@ module.exports = {
           
           await api.sendMessage(joinMessage, threadID);
 
-          if (config.botNickname) {
+          if (config.botName) {
             try {
-              await api.nickname(config.botNickname, threadID, api.getCurrentUserID());
-              console.log(`✅ Changed bot nickname to "${config.botNickname}" in thread ${threadID}`);
+              await api.nickname(config.botName, threadID, api.getCurrentUserID());
+              console.log(`✅ Changed bot nickname to "${config.botName}" in thread ${threadID}`);
             } catch (error) {
               console.error("Error changing bot nickname:", error);
             }

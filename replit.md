@@ -109,7 +109,7 @@ Preferred communication style: Simple, everyday language.
 3. **jointnoti** (log:subscribe) - Handles bot joining threads
    - Triggers only when the bot itself is added to a group
    - Sends introduction message explaining bot's purpose
-   - Automatically changes bot's nickname to configured value
+   - Automatically changes bot's nickname to configured value using api.nickname()
    - Logs nickname change success/failure
 
 **Event Processing**:
@@ -131,14 +131,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Message Processing Pipeline
 
-**Processing Flow**:
+**Processing Flow** (Updated November 5, 2025):
 1. Receive message event via MQTT
 2. Filter out bot's own messages and non-message events
 3. Parse message for prefix detection (with whitespace trimming)
 4. Extract command name and arguments
 5. Validate prefix usage against command requirements
-6. Route to appropriate command handler or show validation error
-7. Execute command with standardized context
+6. Check cooldown status for user-command combination
+7. Route to appropriate command handler or show validation/cooldown error
+8. Execute command with standardized context
+9. Update cooldown timestamp for user-command pair
 
 **Prefix Handling Logic**:
 - Prefix is configurable via `config.json` (default: `!`)
@@ -152,6 +154,15 @@ Preferred communication style: Simple, everyday language.
 - Commands must explicitly set `usePrefix: true` or `usePrefix: false`
 - Prefixed unknown commands show configurable invalid command message
 - Non-prefixed unknown messages are ignored (no response)
+
+**Cooldown System** (Added November 5, 2025):
+- Prevents command spam with configurable cooldown time
+- Cooldown is tracked per user per command (different users can use same command simultaneously)
+- Default cooldown: 3 seconds (configurable in config.json)
+- Cooldown tracking uses Map with key format: `${userID}_${commandName}`
+- User-friendly feedback: "⏳ Please wait X seconds before using this command again."
+- Cooldowns are stored in memory and reset on bot restart
+- No cooldown bypass for admins (can be added in future)
 
 **Current Commands** (Updated November 4, 2025):
 - `!help` - Shows available commands with usage examples (requires prefix)
@@ -213,6 +224,7 @@ Preferred communication style: Simple, everyday language.
   - `invalidCommandMessage`: Message shown for invalid prefixed commands
   - `botName`: Bot name displayed in introduction messages
   - `botNickname`: Nickname automatically set when bot joins a thread
+  - `cooldownTime`: Cooldown duration in seconds for commands (default: 3)
   - `admin`: Array of admin user IDs for future admin-only commands
 - Purpose: Centralized configuration for bot behavior
 - Security: Can be committed to version control (no sensitive data)
@@ -223,6 +235,7 @@ Preferred communication style: Simple, everyday language.
     "invalidCommandMessage": "❌ Invalid command. Type !help to see available commands.",
     "botName": "Facebook Bot",
     "botNickname": "🤖 Bot",
+    "cooldownTime": 3,
     "admin": []
   }
   ```

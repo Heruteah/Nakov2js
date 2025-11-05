@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google/genai": "^1.28.0",
     "@types/node": "^22.13.11",
     "axios": "^1.13.1",
     "ws3-fca": "^3.5.2"

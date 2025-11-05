@@ -58,7 +58,7 @@ login(credentials, {
     }
   }
 
-  const PREFIX = config.prefix || "!";
+  const PREFIX = config.prefix;
   const userCooldowns = new Map();
 
   api.listenMqtt(async (err, event) => {

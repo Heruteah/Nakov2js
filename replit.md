@@ -1,6 +1,6 @@
 # Overview
 
-This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features a modular command system with prefix-based commands, including help documentation, prefix display, and AI-powered image generation through Facebook Messenger.
+This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features a modular command system with prefix-based commands, including help documentation, prefix display, AI-powered image generation, and event handlers for welcoming users, notifying on leave, and automatically setting bot nickname when joining threads.
 
 # User Preferences
 
@@ -74,6 +74,60 @@ Preferred communication style: Simple, everyday language.
 **Cons**:
 - No hot-reload capability (requires bot restart)
 - Limited error isolation between commands
+
+## Event Module System (Added November 5, 2025)
+
+**Problem**: Need automated responses to Facebook Messenger events like users joining/leaving groups.
+
+**Solution**: Plugin-style event modules similar to command modules, with standardized interface for handling Facebook log events.
+
+**Event Structure**:
+```javascript
+{
+  name: string,           // Event identifier
+  execute: function       // Event handler with { api, event, config }
+}
+```
+
+**Event Discovery**:
+- Scans `modules/events/` directory at startup
+- Auto-loads all `.js` files
+- Validates event structure before registration
+- Logs loaded events for debugging
+
+**Supported Events**:
+1. **welcome** (log:subscribe) - Greets new users joining a thread
+   - Triggers when users are added to a group
+   - Skips greeting if the bot itself is added
+   - Displays personalized welcome message with user's name
+   
+2. **leavenoti** (log:unsubscribe) - Notifies when users leave a thread
+   - Triggers when users leave or are removed from a group
+   - Fetches user information to display their name
+   - Shows goodbye message to remaining members
+   
+3. **jointnoti** (log:subscribe) - Handles bot joining threads
+   - Triggers only when the bot itself is added to a group
+   - Sends introduction message explaining bot's purpose
+   - Automatically changes bot's nickname to configured value
+   - Logs nickname change success/failure
+
+**Event Processing**:
+- Event type detection: Distinguishes between "message" and "event" types
+- Log type routing: Routes log:subscribe and log:unsubscribe to appropriate handlers
+- Parallel execution: Both welcome and jointnoti can run for the same log:subscribe event
+- Error isolation: Each event handler has independent try-catch blocks
+
+**Pros**:
+- Automated user engagement without manual intervention
+- Self-contained event logic separate from command processing
+- Graceful error handling prevents one event from breaking others
+- Easy to add new event types following the same pattern
+
+**Cons**:
+- No hot-reload capability (requires bot restart)
+- Dependent on Facebook's event payload structure
+- Nickname change requires appropriate thread permissions
 
 ## Message Processing Pipeline
 
@@ -152,12 +206,13 @@ Preferred communication style: Simple, everyday language.
 
 ## File System Dependencies
 
-**config.json** (Required, Updated November 4, 2025)
+**config.json** (Required, Updated November 5, 2025)
 - Format: JSON object with bot configuration
 - Contains:
   - `prefix`: Command prefix character (default: `!`)
   - `invalidCommandMessage`: Message shown for invalid prefixed commands
-  - `botName`: Bot name for future use
+  - `botName`: Bot name displayed in introduction messages
+  - `botNickname`: Nickname automatically set when bot joins a thread
   - `admin`: Array of admin user IDs for future admin-only commands
 - Purpose: Centralized configuration for bot behavior
 - Security: Can be committed to version control (no sensitive data)
@@ -167,6 +222,7 @@ Preferred communication style: Simple, everyday language.
     "prefix": "!",
     "invalidCommandMessage": "❌ Invalid command. Type !help to see available commands.",
     "botName": "Facebook Bot",
+    "botNickname": "🤖 Bot",
     "admin": []
   }
   ```
@@ -182,3 +238,10 @@ Preferred communication style: Simple, everyday language.
 - Auto-created if missing
 - Contains: Individual command module .js files
 - Loaded: At bot startup via dynamic require()
+
+**modules/events/** (Directory Structure, Added November 5, 2025)
+- Expected Location: `./modules/events/`
+- Auto-created if missing
+- Contains: Individual event module .js files (welcome.js, leavenoti.js, jointnoti.js)
+- Loaded: At bot startup via dynamic require()
+- Purpose: Handles Facebook Messenger log events (user join/leave)

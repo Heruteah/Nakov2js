@@ -34,6 +34,7 @@ login(credentials, {
 
   const commandsDir = path.join(__dirname, "modules", "commands");
   const commands = new Map();
+  global.commands = commands;
 
   if (!fs.existsSync(commandsDir)) fs.mkdirSync(commandsDir, { recursive: true });
 

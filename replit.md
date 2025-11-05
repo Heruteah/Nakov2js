@@ -170,7 +170,7 @@ Preferred communication style: Simple, everyday language.
 - `!uid` - Returns the user's Facebook User ID (requires prefix)
 - `!poli <prompt>` - Generates images using Pollinations AI (requires prefix)
 - `ai <question>` - Chat with AI assistant (no prefix needed)
-- `gemini <text>` - Analyze images using Google Gemini AI (no prefix needed, must reply to a photo)
+- `gemini <text>` - Chat with Gemini AI or analyze images (no prefix needed, supports both text queries and photo replies)
 - `prefix` - Displays the current command prefix (no prefix needed)
 
 # External Dependencies
@@ -220,11 +220,11 @@ Preferred communication style: Simple, everyday language.
 - Service: Google Generative AI
 - Model: gemini-2.5-flash
 - Authentication: GEMINI_API_KEY environment variable
-- Input: Base64-encoded JPEG images with text prompts
-- Response Format: Text analysis/description of the image
-- Purpose: Provides advanced image recognition and description capabilities
+- Input: Text prompts or base64-encoded JPEG images with text prompts
+- Response Format: Text response for queries or image analysis/description
+- Purpose: Provides conversational AI and advanced image recognition capabilities
 - Used By: `gemini` command module
-- Features: Object detection, scene description, visual understanding
+- Features: Text conversation, object detection, scene description, visual understanding
 
 ## Platform Dependencies
 

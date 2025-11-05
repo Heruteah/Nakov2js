@@ -1,12 +1,17 @@
 const fs = require("fs");
 const path = require("path");
 const { login } = require("ws3-fca");
+const BotpackConsole = require("./utils/console");
+
+console.clear();
+BotpackConsole.banner();
 
 let credentials;
 try {
   credentials = { appState: JSON.parse(fs.readFileSync("appstate.json", "utf8")) };
 } catch (err) {
-  console.error("❌ appstate.json is missing or malformed.", err);
+  BotpackConsole.error("appstate.json is missing or malformed.");
+  console.error(err);
   process.exit(1);
 }
 
@@ -14,11 +19,13 @@ let config;
 try {
   config = JSON.parse(fs.readFileSync("config.json", "utf8"));
 } catch (err) {
-  console.error("❌ config.json is missing or malformed.", err);
+  BotpackConsole.error("config.json is missing or malformed.");
+  console.error(err);
   process.exit(1);
 }
 
-console.log("Logging in...");
+BotpackConsole.info("Logging in...");
+BotpackConsole.separator();
 
 login(credentials, {
   online: true,
@@ -26,12 +33,18 @@ login(credentials, {
   selfListen: false,
   randomUserAgent: false
 }, async (err, api) => {
-  if (err) return console.error("LOGIN ERROR:", err);
+  if (err) {
+    BotpackConsole.error("LOGIN FAILED!");
+    console.error(err);
+    return;
+  }
 
-  console.log(`✅ Logged in as: ${api.getCurrentUserID()}`);
+  BotpackConsole.login(api.getCurrentUserID());
+  BotpackConsole.separator();
 
   global.botStartTime = Date.now();
 
+  BotpackConsole.info("Loading commands...");
   const commandsDir = path.join(__dirname, "modules", "commands");
   const commands = new Map();
   global.commands = commands;
@@ -42,10 +55,12 @@ login(credentials, {
     const command = require(path.join(commandsDir, file));
     if (command.config && command.config.name && typeof command.run === "function") {
       commands.set(command.config.name, command);
-      console.log(`🔧 Loaded command: ${command.config.name}`);
+      BotpackConsole.command(command.config.name);
     }
   }
 
+  BotpackConsole.separator();
+  BotpackConsole.info("Loading events...");
   const eventsDir = path.join(__dirname, "modules", "events");
   const events = new Map();
 
@@ -55,9 +70,14 @@ login(credentials, {
     const eventHandler = require(path.join(eventsDir, file));
     if (eventHandler.name && typeof eventHandler.execute === "function") {
       events.set(eventHandler.name, eventHandler);
-      console.log(`📅 Loaded event: ${eventHandler.name}`);
+      BotpackConsole.event(eventHandler.name);
     }
   }
+
+  BotpackConsole.separator();
+  BotpackConsole.systemInfo();
+  BotpackConsole.success("Bot is ready and listening for messages!");
+  BotpackConsole.separator();
 
   const PREFIX = config.prefix;
   const userCooldowns = new Map();
@@ -101,6 +121,8 @@ login(credentials, {
 
         userCooldowns.set(cooldownKey, now);
 
+        BotpackConsole.executing(commandName, event.senderID);
+
         const reply = (message) => {
           return api.sendMessage(message, event.threadID, event.messageID);
         };
@@ -114,7 +136,7 @@ login(credentials, {
         try {
           await command.run(api, event, args, reply, react);
         } catch (error) {
-          console.error(`Error in ${commandName} command:`, error);
+          BotpackConsole.error(`Error in ${commandName} command: ${error.message}`);
           api.sendMessage("❌ Error processing your command.", event.threadID, event.messageID);
         }
       } else {
@@ -131,7 +153,7 @@ login(credentials, {
           try {
             await welcomeEvent.execute({ api, event, config });
           } catch (error) {
-            console.error("Error in welcome event:", error);
+            BotpackConsole.error(`Error in welcome event: ${error.message}`);
           }
         }
         
@@ -139,7 +161,7 @@ login(credentials, {
           try {
             await jointnotiEvent.execute({ api, event, config });
           } catch (error) {
-            console.error("Error in jointnoti event:", error);
+            BotpackConsole.error(`Error in jointnoti event: ${error.message}`);
           }
         }
       } else if (event.logMessageType === "log:unsubscribe") {
@@ -149,9 +171,19 @@ login(credentials, {
           try {
             await leavenotiEvent.execute({ api, event, config });
           } catch (error) {
-            console.error("Error in leavenoti event:", error);
+            BotpackConsole.error(`Error in leavenoti event: ${error.message}`);
           }
         }
+      }
+    }
+
+    // Execute alldl event for all messages
+    const alldlEvent = events.get("alldl");
+    if (alldlEvent && event.type === "message") {
+      try {
+        await alldlEvent.execute({ api, event, config });
+      } catch (error) {
+        BotpackConsole.error(`Error in alldl event: ${error.message}`);
       }
     }
   });

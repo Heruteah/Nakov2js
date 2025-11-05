@@ -57,6 +57,8 @@ login(credentials, {
   }
 
   const PREFIX = config.prefix || "!";
+  const cooldownTime = (config.cooldownTime || 3) * 1000;
+  const userCooldowns = new Map();
 
   api.listenMqtt(async (err, event) => {
     if (err) return;
@@ -81,6 +83,20 @@ login(credentials, {
         if (!command.usePrefix && hasPrefix) {
           return api.sendMessage("This command doesn't use prefix", event.threadID, event.messageID);
         }
+
+        const now = Date.now();
+        const cooldownKey = `${event.senderID}_${commandName}`;
+        
+        if (userCooldowns.has(cooldownKey)) {
+          const expirationTime = userCooldowns.get(cooldownKey) + cooldownTime;
+          
+          if (now < expirationTime) {
+            const timeLeft = ((expirationTime - now) / 1000).toFixed(1);
+            return api.sendMessage(`⏳ Please wait ${timeLeft} seconds before using this command again.`, event.threadID, event.messageID);
+          }
+        }
+
+        userCooldowns.set(cooldownKey, now);
 
         try {
           await command.execute({ api, event, args });

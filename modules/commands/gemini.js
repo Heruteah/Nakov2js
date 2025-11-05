@@ -3,7 +3,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "AIzaSyAed9G43rVmaTr4CcJznxVbBc6pCX2C-nY" });
 
 module.exports = {
   name: "gemini",
@@ -75,7 +75,7 @@ module.exports = {
       const responseText = geminiResponse.text() || "Unable to generate a response.";
 
       await api.editMessage(
-        `🤖 Gemini:\n\n${responseText}`,
+        `${responseText}`,
         waitingMsg.messageID,
         event.threadID
       );

@@ -167,8 +167,10 @@ Preferred communication style: Simple, everyday language.
 **Current Commands** (Updated November 5, 2025):
 - `!help` - Shows available commands with usage examples (requires prefix)
 - `!uptime` - Shows how long the bot has been running (requires prefix)
+- `!uid` - Returns the user's Facebook User ID (requires prefix)
 - `!poli <prompt>` - Generates images using Pollinations AI (requires prefix)
 - `ai <question>` - Chat with AI assistant (no prefix needed)
+- `gemini <text>` - Analyze images using Google Gemini AI (no prefix needed, must reply to a photo)
 - `prefix` - Displays the current command prefix (no prefix needed)
 
 # External Dependencies
@@ -189,6 +191,12 @@ Preferred communication style: Simple, everyday language.
 - Purpose: TypeScript type definitions for Node.js
 - Usage: Development dependency for IDE support
 
+**@google/genai** (Added November 5, 2025)
+- Purpose: Official Google Generative AI SDK for Node.js
+- Function: Provides access to Google's Gemini AI models for image and text analysis
+- Integration: Used by `gemini` command for image recognition and description
+- Authentication: Requires GEMINI_API_KEY environment variable
+
 ## External API Services
 
 **Copilot AI API**
@@ -207,6 +215,16 @@ Preferred communication style: Simple, everyday language.
 - Purpose: Generates images from text prompts using AI
 - Used By: `poli` command module
 - Image Format: Returns JPEG image as base64-encoded string
+
+**Google Gemini API** (Added November 5, 2025)
+- Service: Google Generative AI
+- Model: gemini-2.5-flash
+- Authentication: GEMINI_API_KEY environment variable
+- Input: Base64-encoded JPEG images with text prompts
+- Response Format: Text analysis/description of the image
+- Purpose: Provides advanced image recognition and description capabilities
+- Used By: `gemini` command module
+- Features: Object detection, scene description, visual understanding
 
 ## Platform Dependencies
 

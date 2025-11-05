@@ -5,6 +5,7 @@ module.exports = {
   async execute({ api, event, args }) {
     const helpMessage = `📋 Available Commands:\n\n` +
       `!help - Shows this help message\n` +
+      `!uptime - Shows how long the bot has been running\n` +
       `!poli <prompt> - Generate an image using AI\n` +
       `ai <question> - Chat with AI (no prefix needed)\n` +
       `prefix - Shows the current command prefix (no prefix needed)\n\n` +

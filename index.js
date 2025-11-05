@@ -30,6 +30,8 @@ login(credentials, {
 
   console.log(`✅ Logged in as: ${api.getCurrentUserID()}`);
 
+  global.botStartTime = Date.now();
+
   const commandsDir = path.join(__dirname, "modules", "commands");
   const commands = new Map();
 

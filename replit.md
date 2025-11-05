@@ -164,8 +164,9 @@ Preferred communication style: Simple, everyday language.
 - Cooldowns are stored in memory and reset on bot restart
 - No cooldown bypass for admins (can be added in future)
 
-**Current Commands** (Updated November 4, 2025):
+**Current Commands** (Updated November 5, 2025):
 - `!help` - Shows available commands with usage examples (requires prefix)
+- `!uptime` - Shows how long the bot has been running (requires prefix)
 - `!poli <prompt>` - Generates images using Pollinations AI (requires prefix)
 - `ai <question>` - Chat with AI assistant (no prefix needed)
 - `prefix` - Displays the current command prefix (no prefix needed)

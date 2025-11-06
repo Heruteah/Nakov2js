@@ -59,6 +59,10 @@ class BotpackConsole {
     const timestamp = this.getTimestamp();
     const styledMessage = FontSystem.applyFonts(message, 'fancy');
     process.stdout.write(`${COLORS.green}✓${COLORS.reset} ${timestamp} ${styledMessage}\n`);
+    
+    if (global.webConsoleBroadcast) {
+      global.webConsoleBroadcast(`✓ ${message}`, 'success');
+    }
   }
 
   static error(message, details = null, suggestion = null) {
@@ -70,12 +74,20 @@ class BotpackConsole {
     const timestamp = this.getTimestamp();
     process.stderr.write(`${COLORS.red}✗${COLORS.reset} ${timestamp} ${COLORS.bright}${message}${COLORS.reset}\n`);
     
+    let fullError = `✗ ${message}`;
+    
     if (details) {
       process.stderr.write(`  ${COLORS.dim}Details: ${details}${COLORS.reset}\n`);
+      fullError += `\nDetails: ${details}`;
     }
     
     if (suggestion) {
       process.stderr.write(`  ${COLORS.yellow}💡 Suggestion: ${suggestion}${COLORS.reset}\n`);
+      fullError += `\n💡 Suggestion: ${suggestion}`;
+    }
+    
+    if (global.webConsoleBroadcast) {
+      global.webConsoleBroadcast(fullError, 'error');
     }
   }
 
@@ -87,6 +99,10 @@ class BotpackConsole {
     const timestamp = this.getTimestamp();
     const styledMessage = FontSystem.applyFonts(message, 'fancy');
     process.stdout.write(`${COLORS.blue}ℹ${COLORS.reset} ${timestamp} ${styledMessage}\n`);
+    
+    if (global.webConsoleBroadcast) {
+      global.webConsoleBroadcast(`ℹ ${message}`, 'info');
+    }
   }
 
   static warning(message, suggestion = null) {
@@ -98,8 +114,15 @@ class BotpackConsole {
     const timestamp = this.getTimestamp();
     process.stdout.write(`${COLORS.yellow}⚠${COLORS.reset} ${timestamp} ${message}\n`);
     
+    let fullWarning = `⚠ ${message}`;
+    
     if (suggestion) {
       process.stdout.write(`  ${COLORS.dim}💡 ${suggestion}${COLORS.reset}\n`);
+      fullWarning += `\n💡 ${suggestion}`;
+    }
+    
+    if (global.webConsoleBroadcast) {
+      global.webConsoleBroadcast(fullWarning, 'warning');
     }
   }
 

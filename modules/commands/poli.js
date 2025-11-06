@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const { format, FontSystem } = require('cassidy-styler');
 
 module.exports = {
   config: {
@@ -15,11 +16,17 @@ module.exports = {
     const prompt = args.join(" ").trim();
 
     if (!prompt) {
-      return reply("🎨 Please provide a prompt for image generation.\n\nExample: !poli beautiful sunset over mountains");
+      const helpMsg = format({
+        title: '🎨 Image Generation',
+        titleFont: 'bold',
+        content: `Please provide a prompt for image generation.\n\n${FontSystem.applyFonts('Example:', 'bold')} ${FontSystem.applyFonts('!poli beautiful sunset over mountains', 'typewriter')}`,
+        contentFont: 'fancy'
+      });
+      return reply(helpMsg);
     }
 
     try {
-      const waitingMsg = await api.sendMessage("🎨 Generating your image...", event.threadID);
+      const waitingMsg = await api.sendMessage(`🎨 ${FontSystem.applyFonts('Generating your image...', 'fancy')}`, event.threadID);
       const url = `https://api-library-kohi.onrender.com/api/pollinations?prompt=${encodeURIComponent(prompt)}&model=flux`;
       const res = await axios.get(url);
 
@@ -35,9 +42,11 @@ module.exports = {
       const imagePath = path.join(tempDir, `poli_${Date.now()}.jpg`);
       fs.writeFileSync(imagePath, imageBuffer);
 
+      const caption = `🎨 ${FontSystem.applyFonts('Generated:', 'bold')} ${FontSystem.applyFonts(`"${prompt}"`, 'fancy')}`;
+
       await api.sendMessage(
         {
-          body: `🎨 Generated image for: "${prompt}"`,
+          body: caption,
           attachment: fs.createReadStream(imagePath)
         },
         event.threadID
@@ -50,7 +59,13 @@ module.exports = {
       }, 5000);
     } catch (err) {
       console.error("Poli Command Error:", err);
-      reply("❌ Error generating image. Please try again later.");
+      const errorMsg = format({
+        title: '❌ Error',
+        titleFont: 'bold',
+        content: 'Error generating image. Please try again later.',
+        contentFont: 'fancy'
+      });
+      reply(errorMsg);
     }
   }
 };

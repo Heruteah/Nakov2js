@@ -1,3 +1,5 @@
+const { format, FontSystem } = require('cassidy-styler');
+
 module.exports = {
   config: {
     name: "uptime",
@@ -23,35 +25,39 @@ module.exports = {
     const displayHours = totalHours % 24;
     const displayDays = totalDays % 365;
     
-    let uptimeMessage = "⏰ 𝗕𝗢𝗧 𝗨𝗣𝗧𝗜𝗠𝗘 𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗧𝗜𝗢𝗡\n";
-    uptimeMessage += "━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+    let content = '';
     
-    uptimeMessage += "📊 Detailed Uptime:\n";
-    uptimeMessage += `├─ Years: ${totalYears}\n`;
-    uptimeMessage += `├─ Days: ${displayDays}\n`;
-    uptimeMessage += `├─ Hours: ${displayHours}\n`;
-    uptimeMessage += `├─ Minutes: ${displayMinutes}\n`;
-    uptimeMessage += `├─ Seconds: ${displaySeconds}\n`;
-    uptimeMessage += `└─ Milliseconds: ${milliseconds}\n\n`;
+    content += FontSystem.applyFonts('📊 Detailed Uptime:', 'bold') + '\n';
+    content += `  ├─ Years: ${FontSystem.applyFonts(totalYears.toString(), 'double_struck')}\n`;
+    content += `  ├─ Days: ${FontSystem.applyFonts(displayDays.toString(), 'double_struck')}\n`;
+    content += `  ├─ Hours: ${FontSystem.applyFonts(displayHours.toString(), 'double_struck')}\n`;
+    content += `  ├─ Minutes: ${FontSystem.applyFonts(displayMinutes.toString(), 'double_struck')}\n`;
+    content += `  ├─ Seconds: ${FontSystem.applyFonts(displaySeconds.toString(), 'double_struck')}\n`;
+    content += `  └─ Milliseconds: ${FontSystem.applyFonts(milliseconds.toString(), 'double_struck')}\n\n`;
     
-    uptimeMessage += "📈 Total Runtime:\n";
-    uptimeMessage += `├─ ${totalDays} total days\n`;
-    uptimeMessage += `├─ ${totalHours} total hours\n`;
-    uptimeMessage += `├─ ${totalMinutes} total minutes\n`;
-    uptimeMessage += `└─ ${totalSeconds} total seconds\n\n`;
+    content += FontSystem.applyFonts('📈 Total Runtime:', 'bold') + '\n';
+    content += `  ├─ ${FontSystem.applyFonts(totalDays.toString(), 'typewriter')} total days\n`;
+    content += `  ├─ ${FontSystem.applyFonts(totalHours.toString(), 'typewriter')} total hours\n`;
+    content += `  ├─ ${FontSystem.applyFonts(totalMinutes.toString(), 'typewriter')} total minutes\n`;
+    content += `  └─ ${FontSystem.applyFonts(totalSeconds.toString(), 'typewriter')} total seconds\n\n`;
     
-    uptimeMessage += "🕐 Started At:\n";
-    uptimeMessage += `└─ ${startDate.toLocaleString()}\n\n`;
+    content += FontSystem.applyFonts('🕐 Started At:', 'bold') + '\n';
+    content += `  └─ ${FontSystem.applyFonts(startDate.toLocaleString(), 'fancy')}\n\n`;
     
-    uptimeMessage += "💾 System Info:\n";
-    uptimeMessage += `├─ Memory Usage: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\n`;
-    uptimeMessage += `├─ Platform: ${process.platform}\n`;
-    uptimeMessage += `└─ Node Version: ${process.version}\n\n`;
+    content += FontSystem.applyFonts('💾 System Info:', 'bold') + '\n';
+    content += `  ├─ Memory: ${FontSystem.applyFonts((process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2) + ' MB', 'typewriter')}\n`;
+    content += `  ├─ Platform: ${FontSystem.applyFonts(process.platform, 'typewriter')}\n`;
+    content += `  └─ Node: ${FontSystem.applyFonts(process.version, 'typewriter')}\n\n`;
     
-    uptimeMessage += "✅ Status: Running Smoothly\n\n";
-    uptimeMessage += "━━━━━━━━━━━━━━━━━━━━━━━\n";
-    uptimeMessage += "👨‍💻 Developer: ioa39rkdev\n";
-    uptimeMessage += "━━━━━━━━━━━━━━━━━━━━━━━";
+    content += `✅ ${FontSystem.applyFonts('Status: Running Smoothly', 'fancy')}\n`;
+    content += `👨‍💻 ${FontSystem.applyFonts('Developer: ioa39rkdev', 'script')}`;
+    
+    const uptimeMessage = format({
+      title: '⏰ Bot Uptime',
+      titleFont: 'bold',
+      content: content,
+      contentFont: 'none'
+    });
     
     reply(uptimeMessage);
   }

@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { format, FontSystem } = require('cassidy-styler');
 
 module.exports = {
   config: {
@@ -13,12 +14,12 @@ module.exports = {
     const prompt = args.join(" ").trim();
 
     if (!prompt || prompt.toLowerCase() === "ai") {
-      return reply("Please provide a question first.");
+      return reply(FontSystem.applyFonts("Please provide a question first.", 'fancy'));
     }
 
     try {
       const user = event.senderID;
-      const waitingMsg = await api.sendMessage("⏳ Searching...", event.threadID);
+      const waitingMsg = await api.sendMessage(`⏳ ${FontSystem.applyFonts('Searching...', 'fancy')}`, event.threadID);
       const url = `https://api-library-kohi.onrender.com/api/copilot?prompt=${encodeURIComponent(prompt)}&model=gpt-5&user=${user}`;
       const res = await axios.get(url);
 
@@ -28,7 +29,15 @@ module.exports = {
       }
 
       const text = res.data.data?.text || res.data.message || "⚠️ Empty response from AI.";
-      api.editMessage(text, waitingMsg.messageID, event.threadID);
+      
+      const formattedResponse = format({
+        title: '🤖 AI Response',
+        titleFont: 'bold',
+        content: text,
+        contentFont: 'fancy'
+      });
+      
+      api.editMessage(formattedResponse, waitingMsg.messageID, event.threadID);
 
     } catch (err) {
       console.error("❎ Error:", err);
@@ -36,7 +45,15 @@ module.exports = {
                          err.response?.data?.message || 
                          err.message || 
                          "Unknown error occurred.";
-      reply(`❌ Error contacting the AI API:\n\n${errMessage}`);
+      
+      const errorMsg = format({
+        title: '❌ Error',
+        titleFont: 'bold',
+        content: `Error contacting the AI API:\n\n${errMessage}`,
+        contentFont: 'fancy'
+      });
+      
+      reply(errorMsg);
     }
   }
 };

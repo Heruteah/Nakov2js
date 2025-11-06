@@ -1,8 +1,31 @@
-# Facebook Messenger Bot - Command Structure Documentation
+# 🤖 Facebook Messenger Bot
 
-## Overview
+## ✨ Features
+
+- 🎨 **Beautiful Unicode Styling** - Powered by cassidy-styler for elegant command responses
+- 🌐 **Web Console Dashboard** - Real-time monitoring at http://localhost:5000
+- 📦 **Modular Commands** - Easy-to-add command system
+- 🎭 **Event Handlers** - Welcome messages, join/leave notifications
+- 🔄 **Offline Mode** - Bot loads even without Facebook credentials
+- ⚡ **Animated Loading** - Spinners and progress indicators
+- 🎯 **Prefix Support** - Commands with or without prefixes
+- ❄️ **Cooldown System** - Prevent command spam
+
+## 🌐 Web Console
+
+Access the beautiful web dashboard at `http://localhost:5000`:
+- **Real-time logs** with color coding
+- **Live statistics** (total logs, success, errors, warnings, uptime)
+- **Filter logs** by type (all, errors, warnings, success)
+- **Modern UI** with gradients and glassmorphism
+
+See `WEB_CONSOLE_GUIDE.md` for full documentation.
+
+## 📚 Command Structure Documentation
 
 This Facebook Messenger bot uses a modular command system with a standardized structure. Commands are dynamically loaded from the `modules/commands/` directory.
+
+All commands and events now use **cassidy-styler** for beautiful Unicode formatted responses!
 
 ## Command Structure
 

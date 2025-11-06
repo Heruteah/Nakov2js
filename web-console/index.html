@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 BOT Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .console-window {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        .console-controls {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            margin: -20px -20px 10px -20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+            z-index: 10;
+        }
+
+        .console-controls button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .console-controls button:hover {
+            transform: scale(1.05);
+        }
+
+        .console-controls .status {
+            margin-left: auto;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status.connected {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .status.disconnected {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid #F44336;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .log-entry.success {
+            color: #4CAF50;
+        }
+
+        .log-entry.error {
+            color: #F44336;
+            font-weight: bold;
+        }
+
+        .log-entry.warning {
+            color: #FFC107;
+        }
+
+        .log-entry.info {
+            color: #2196F3;
+        }
+
+        .log-entry.banner {
+            color: #00BCD4;
+            font-weight: bold;
+        }
+
+        .timestamp {
+            color: #888;
+            margin-right: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .filter-buttons button {
+            padding: 5px 10px;
+            font-size: 0.85em;
+        }
+
+        .filter-buttons button.active {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 BOT Web Console</h1>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>📊 Total Logs</h3>
+                <div class="value" id="totalLogs">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>✅ Success</h3>
+                <div class="value" id="successCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>❌ Errors</h3>
+                <div class="value" id="errorCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>⚠️ Warnings</h3>
+                <div class="value" id="warningCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>⏱️ Uptime</h3>
+                <div class="value" id="uptime">0s</div>
+            </div>
+        </div>
+
+        <div class="console-window">
+            <div class="console-controls">
+                <button onclick="clearLogs()">🗑️ Clear</button>
+                <button onclick="scrollToBottom()">⬇️ Scroll to Bottom</button>
+                <div class="filter-buttons">
+                    <button class="active" onclick="toggleFilter('all')">All</button>
+                    <button onclick="toggleFilter('error')">Errors</button>
+                    <button onclick="toggleFilter('warning')">Warnings</button>
+                    <button onclick="toggleFilter('success')">Success</button>
+                </div>
+                <div class="status connected" id="status">● Connected</div>
+            </div>
+            <div id="logs"></div>
+        </div>
+    </div>
+
+    <script>
+        const logsContainer = document.getElementById('logs');
+        const statusIndicator = document.getElementById('status');
+        let totalLogs = 0;
+        let successCount = 0;
+        let errorCount = 0;
+        let warningCount = 0;
+        let startTime = Date.now();
+        let currentFilter = 'all';
+
+        function updateStats() {
+            document.getElementById('totalLogs').textContent = totalLogs;
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('errorCount').textContent = errorCount;
+            document.getElementById('warningCount').textContent = warningCount;
+        }
+
+        function updateUptime() {
+            const uptime = Math.floor((Date.now() - startTime) / 1000);
+            const hours = Math.floor(uptime / 3600);
+            const minutes = Math.floor((uptime % 3600) / 60);
+            const seconds = uptime % 60;
+            document.getElementById('uptime').textContent = `${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        function addLog(message, type = 'info') {
+            if (currentFilter !== 'all' && currentFilter !== type) {
+                return;
+            }
+
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.innerHTML = `<span class="timestamp">[${timestamp}]</span>${escapeHtml(message)}`;
+            
+            logsContainer.appendChild(logEntry);
+            totalLogs++;
+            
+            if (type === 'success') successCount++;
+            if (type === 'error') errorCount++;
+            if (type === 'warning') warningCount++;
+            
+            updateStats();
+            scrollToBottom();
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function clearLogs() {
+            logsContainer.innerHTML = '';
+            totalLogs = 0;
+            successCount = 0;
+            errorCount = 0;
+            warningCount = 0;
+            updateStats();
+        }
+
+        function scrollToBottom() {
+            logsContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        function toggleFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-buttons button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Reload logs with filter (in real app, this would re-fetch)
+            console.log(`Filter changed to: ${filter}`);
+        }
+
+        // Connect to server via EventSource (Server-Sent Events)
+        const eventSource = new EventSource('/logs');
+        
+        eventSource.onopen = function() {
+            statusIndicator.className = 'status connected';
+            statusIndicator.textContent = '● Connected';
+            addLog('Connected to bot console', 'success');
+        };
+
+        eventSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                addLog(data.message, data.type);
+            } catch (e) {
+                addLog(event.data, 'info');
+            }
+        };
+
+        eventSource.onerror = function() {
+            statusIndicator.className = 'status disconnected';
+            statusIndicator.textContent = '● Disconnected';
+            setTimeout(() => {
+                addLog('Attempting to reconnect...', 'warning');
+            }, 1000);
+        };
+
+        // Update uptime every second
+        setInterval(updateUptime, 1000);
+
+        // Initial logs
+        addLog('╔═══════════════════════════════════════╗', 'banner');
+        addLog('║  𝗕𝗢𝗧 ➤ 𝖥𝖺𝖼𝖾𝖻𝗈𝗈𝗄 𝖬𝖾𝗌𝗌𝖾𝗇𝗀𝖾𝗋 𝖡𝗈𝗍  ║', 'banner');
+        addLog('║  𝑏𝑦 𝑖𝑜𝑎39𝑟𝑘𝑑𝑒𝑣                      ║', 'banner');
+        addLog('╚═══════════════════════════════════════╝', 'banner');
+        addLog('Web Console initialized', 'success');
+        addLog('Waiting for bot events...', 'info');
+    </script>
+</body>
+</html>

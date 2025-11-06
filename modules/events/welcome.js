@@ -1,3 +1,5 @@
+const { format, FontSystem } = require('cassidy-styler');
+
 module.exports = {
   name: "welcome",
   execute: async ({ api, event, config }) => {
@@ -14,7 +16,12 @@ module.exports = {
 
         let userName = participant.fullName || "New Member";
         
-        const welcomeMessage = `👋 Welcome to the group, ${userName}! 🎉\n\nWe're glad to have you here! Feel free to chat and have fun! 😊`;
+        const welcomeMessage = format({
+          title: `👋 Welcome ${userName}! 🎉`,
+          titleFont: 'bold',
+          content: `We're glad to have you here! Feel free to chat and have fun! 😊`,
+          contentFont: 'fancy'
+        });
         
         await api.sendMessage(welcomeMessage, threadID);
       }

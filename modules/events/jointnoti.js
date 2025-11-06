@@ -1,3 +1,5 @@
+const { format, FontSystem } = require('cassidy-styler');
+
 module.exports = {
   name: "jointnoti",
   execute: async ({ api, event, config }) => {
@@ -11,7 +13,14 @@ module.exports = {
         const userID = participant.userFbId;
         
         if (userID === api.getCurrentUserID()) {
-          const joinMessage = `🤖 Hello everyone! I'm ${config.botName || "Bot"}!\n\nI'm here to help and make your chat more fun! Type ${config.prefix}help to see what I can do! 🚀`;
+          const botName = config.botName || "Bot";
+          
+          const joinMessage = format({
+            title: `🤖 ${botName}`,
+            titleFont: 'bold',
+            content: `Hello everyone! I'm here to help and make your chat more fun!\n\n${FontSystem.applyFonts('Type', 'fancy')} ${FontSystem.applyFonts(config.prefix + 'help', 'typewriter')} ${FontSystem.applyFonts('to see what I can do!', 'fancy')} 🚀`,
+            contentFont: 'none'
+          });
           
           await api.sendMessage(joinMessage, threadID);
 

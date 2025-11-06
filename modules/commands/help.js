@@ -1,3 +1,5 @@
+const { format, FontSystem } = require('cassidy-styler');
+
 module.exports = {
   config: {
     name: "help",
@@ -14,8 +16,6 @@ module.exports = {
     if (!commands || commands.size === 0) {
       return reply("❌ No commands loaded.");
     }
-
-    let helpMessage = `📋 Available Commands (${commands.size}):\n\n`;
     
     const prefixCommands = [];
     const noPrefixCommands = [];
@@ -23,29 +23,36 @@ module.exports = {
     for (const [name, cmd] of commands) {
       const cmdConfig = cmd.config;
       const prefix = cmdConfig.prefix ? config.prefix : "";
-      const displayName = `${prefix}${cmdConfig.usage || name}`;
       const description = cmdConfig.description || "No description";
       
       if (cmdConfig.prefix) {
-        prefixCommands.push(`${prefix}${name} - ${description}`);
+        prefixCommands.push(`  ${FontSystem.applyFonts(prefix + name, 'typewriter')} - ${description}`);
       } else {
-        noPrefixCommands.push(`${name} - ${description}`);
+        noPrefixCommands.push(`  ${FontSystem.applyFonts(name, 'typewriter')} - ${description}`);
       }
     }
     
+    let content = '';
+    
     if (prefixCommands.length > 0) {
-      helpMessage += "✅ Prefix Commands:\n";
-      prefixCommands.forEach(cmd => helpMessage += `${cmd}\n`);
-      helpMessage += "\n";
+      content += FontSystem.applyFonts('✅ Prefix Commands:', 'fancy') + '\n';
+      content += prefixCommands.join('\n') + '\n\n';
     }
     
     if (noPrefixCommands.length > 0) {
-      helpMessage += "❎ No Prefix Needed:\n";
-      noPrefixCommands.forEach(cmd => helpMessage += `${cmd}\n`);
-      helpMessage += "\n";
+      content += FontSystem.applyFonts('❎ No Prefix Needed:', 'fancy') + '\n';
+      content += noPrefixCommands.join('\n') + '\n\n';
     }
     
-    helpMessage += `💡 Type ${config.prefix}commandname to use a command`;
+    content += `💡 ${FontSystem.applyFonts('Tip:', 'bold')} Type ${FontSystem.applyFonts(config.prefix + 'commandname', 'typewriter')} to use a command`;
+    
+    const helpMessage = format({
+      title: `📋 Commands (${commands.size})`,
+      titleFont: 'bold',
+      content: content,
+      contentFont: 'none',
+      noFormat: false
+    });
     
     reply(helpMessage);
   }

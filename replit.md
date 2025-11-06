@@ -1,6 +1,13 @@
 # Overview
 
-This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features a modular command system with prefix-based commands, a Botpack-style colorful console interface, automatic video downloads from Facebook and TikTok links, and event handlers for welcoming users, notifying on leave, and automatically setting bot nickname when joining threads.
+This is a Facebook Messenger chatbot built on Node.js that uses the `ws3-fca` library to interact with Facebook's messaging platform. The bot features:
+- Modular command system with prefix-based commands
+- Beautiful console interface with **cassidy-styler** Unicode fonts
+- **Web-based console dashboard** on port 5000 for real-time monitoring
+- Automatic video downloads from Facebook and TikTok links
+- Event handlers for welcoming users, notifying on leave, and setting bot nickname
+- Offline mode support with animated loading
+- Styled command and event responses using Unicode fonts
 
 # User Preferences
 

@@ -3,6 +3,8 @@ const path = require("path");
 const { login } = require("ws3-fca");
 const BotpackConsole = require("./utils/console");
 
+require("./web-console/server");
+
 console.clear();
 BotpackConsole.banner();
 

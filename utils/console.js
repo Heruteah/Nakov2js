@@ -1,3 +1,5 @@
+const { FontSystem, format, UNIRedux } = require('cassidy-styler');
+
 const COLORS = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -32,11 +34,15 @@ class BotpackConsole {
       return;
     }
     
+    const title = FontSystem.applyFonts('BOT', 'bold');
+    const subtitle = FontSystem.applyFonts('Facebook Messenger Bot', 'fancy');
+    const author = FontSystem.applyFonts('by ioa39rkdev', 'script');
+    
     const banner = `
-  ${COLORS.cyan}${COLORS.bright}┌─────────────────────────────────────┐
-  │  ${COLORS.bgCyan}${COLORS.black} BOT ${COLORS.reset}${COLORS.cyan}${COLORS.bright} Facebook Messenger Bot  │
-  │  ${COLORS.dim}by ioa39rkdev${COLORS.reset}${COLORS.cyan}${COLORS.bright}                    │
-  └─────────────────────────────────────┘${COLORS.reset}`;
+  ${COLORS.cyan}╔═══════════════════════════════════════╗
+  ║  ${title} ${UNIRedux.arrow} ${subtitle}  ║
+  ║  ${COLORS.dim}${author}${COLORS.reset}${COLORS.cyan}                      ║
+  ╚═══════════════════════════════════════╝${COLORS.reset}`;
     process.stdout.write(banner + '\n\n');
   }
 
@@ -51,7 +57,8 @@ class BotpackConsole {
       return;
     }
     const timestamp = this.getTimestamp();
-    process.stdout.write(`${COLORS.green}✓${COLORS.reset} ${timestamp} ${message}\n`);
+    const styledMessage = FontSystem.applyFonts(message, 'fancy');
+    process.stdout.write(`${COLORS.green}✓${COLORS.reset} ${timestamp} ${styledMessage}\n`);
   }
 
   static error(message, details = null, suggestion = null) {
@@ -78,7 +85,8 @@ class BotpackConsole {
       return;
     }
     const timestamp = this.getTimestamp();
-    process.stdout.write(`${COLORS.blue}ℹ${COLORS.reset} ${timestamp} ${message}\n`);
+    const styledMessage = FontSystem.applyFonts(message, 'fancy');
+    process.stdout.write(`${COLORS.blue}ℹ${COLORS.reset} ${timestamp} ${styledMessage}\n`);
   }
 
   static warning(message, suggestion = null) {
@@ -100,7 +108,8 @@ class BotpackConsole {
       this.jsonOutput('command_loaded', { name });
       return;
     }
-    process.stdout.write(`  ${COLORS.cyan}├─${COLORS.reset} ${name}\n`);
+    const styledName = FontSystem.applyFonts(name, 'typewriter');
+    process.stdout.write(`  ${COLORS.cyan}├─${COLORS.reset} ${styledName}\n`);
   }
 
   static event(name) {
@@ -108,7 +117,8 @@ class BotpackConsole {
       this.jsonOutput('event_loaded', { name });
       return;
     }
-    process.stdout.write(`  ${COLORS.yellow}├─${COLORS.reset} ${name}\n`);
+    const styledName = FontSystem.applyFonts(name, 'typewriter');
+    process.stdout.write(`  ${COLORS.yellow}├─${COLORS.reset} ${styledName}\n`);
   }
 
   static login(userID) {
@@ -117,7 +127,9 @@ class BotpackConsole {
       return;
     }
     const timestamp = this.getTimestamp();
-    process.stdout.write(`${COLORS.green}✓${COLORS.reset} ${timestamp} Logged in as ${COLORS.cyan}${userID}${COLORS.reset}\n`);
+    const message = FontSystem.applyFonts('Logged in as', 'fancy');
+    const styledID = FontSystem.applyFonts(userID, 'bold');
+    process.stdout.write(`${COLORS.green}✓${COLORS.reset} ${timestamp} ${message} ${COLORS.cyan}${styledID}${COLORS.reset}\n`);
   }
 
   static executing(command, user) {
@@ -126,7 +138,8 @@ class BotpackConsole {
       return;
     }
     const timestamp = this.getTimestamp();
-    process.stdout.write(`${COLORS.blue}▶${COLORS.reset} ${timestamp} ${COLORS.yellow}${command}${COLORS.reset} ${COLORS.dim}(user: ${user})${COLORS.reset}\n`);
+    const styledCommand = FontSystem.applyFonts(command, 'bold');
+    process.stdout.write(`${COLORS.blue}▶${COLORS.reset} ${timestamp} ${COLORS.yellow}${styledCommand}${COLORS.reset} ${COLORS.dim}(user: ${user})${COLORS.reset}\n`);
   }
 
   static download(platform, user) {
@@ -135,7 +148,9 @@ class BotpackConsole {
       return;
     }
     const timestamp = this.getTimestamp();
-    process.stdout.write(`${COLORS.magenta}↓${COLORS.reset} ${timestamp} Downloading ${COLORS.cyan}${platform}${COLORS.reset} ${COLORS.dim}(user: ${user})${COLORS.reset}\n`);
+    const message = FontSystem.applyFonts('Downloading', 'fancy');
+    const styledPlatform = FontSystem.applyFonts(platform, 'bold');
+    process.stdout.write(`${COLORS.magenta}↓${COLORS.reset} ${timestamp} ${message} ${COLORS.cyan}${styledPlatform}${COLORS.reset} ${COLORS.dim}(user: ${user})${COLORS.reset}\n`);
   }
 
   static systemInfo() {
@@ -219,7 +234,8 @@ class BotpackConsole {
 
   static section(title) {
     if (this.machineReadable) return;
-    process.stdout.write(`\n${COLORS.bright}${COLORS.cyan}${title}${COLORS.reset}\n`);
+    const styledTitle = FontSystem.applyFonts(title, 'bold');
+    process.stdout.write(`\n${COLORS.cyan}${styledTitle}${COLORS.reset}\n`);
   }
 }
 

@@ -1,11 +1,16 @@
 # Console Output Guide
 
-This bot features a modern, professional console interface with enhanced readability and useful feedback.
+This bot features a modern, professional console interface powered by **cassidy-styler** for beautiful Unicode fonts, enhanced readability, and useful feedback.
 
 ## Features
 
-### 1. **Compact Design**
-The large ASCII art banner has been replaced with a clean, 3-line header that saves screen space while maintaining visual appeal.
+### 1. **Stylish Unicode Design**
+The console now uses **cassidy-styler** to create beautiful Unicode fonts:
+- **Banner**: Bold title "𝗕𝗢𝗧" with fancy subtitle "𝖥𝖺𝖼𝖾𝖻𝗈𝗈𝗄 𝖬𝖾𝗌𝗌𝖾𝗇𝗀𝖾𝗋 𝖡𝗈𝗍"
+- **Author**: Script font "𝑏𝑦 𝑖𝑜𝑎39𝑟𝑘𝑑𝑒𝑣"
+- **Section Headers**: Bold Unicode "𝗟𝗼𝗮𝗱𝗶𝗻𝗴 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀"
+- **Commands/Events**: Typewriter font "𝚊𝚒", "𝚑𝚎𝚕𝚙", "𝚙𝚘𝚕𝚒"
+- **Messages**: Fancy font for success and info messages
 
 ### 2. **Timestamps**
 Every log entry includes a timestamp `[HH:MM:SS]` to help track when events occurred.
@@ -15,18 +20,18 @@ Every log entry includes a timestamp `[HH:MM:SS]` to help track when events occu
 ℹ [23:18:55] Logging in...
 ```
 
-### 3. **Tree-Style Loading**
-Commands and events are displayed in an organized tree structure for better readability:
+### 3. **Tree-Style Loading with Unicode Fonts**
+Commands and events are displayed in an organized tree structure with beautiful typewriter fonts:
 
 ```
-Loading Commands
-  ├─ ai
-  ├─ help
-  ├─ poli
-  ├─ prefix
-  ├─ uid
-  ├─ uptime
-✓ [23:18:59] Loaded 6 commands
+𝗟𝗼𝗮𝗱𝗶𝗻𝗴 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
+  ├─ 𝚊𝚒
+  ├─ 𝚑𝚎𝚕𝚙
+  ├─ 𝚙𝚘𝚕𝚒
+  ├─ 𝚙𝚛𝚎𝚏𝚒𝚡
+  ├─ 𝚞𝚒𝚍
+  ├─ 𝚞𝚙𝚝𝚒𝚖𝚎
+✓ [23:27:50] 𝖫𝗈𝖺𝖽𝖾𝖽 𝟨 𝖼𝗈𝗆𝗆𝖺𝗇𝖽𝗌
 ```
 
 ### 4. **Actionable Error Messages**
@@ -85,8 +90,20 @@ All output will be in JSON format:
 
 ## Benefits
 
-1. **Less Clutter**: Compact banner saves ~10 lines of screen space
-2. **Better Debugging**: Timestamps help track execution flow
-3. **Faster Problem Solving**: Error suggestions guide you to solutions
-4. **Automation Ready**: Machine-readable JSON mode for scripts
-5. **Professional Look**: Clean, modern CLI design
+1. **Beautiful Unicode Fonts**: Powered by cassidy-styler for elegant text styling
+2. **Better Readability**: Different font styles for different types of information
+3. **Better Debugging**: Timestamps help track execution flow
+4. **Faster Problem Solving**: Error suggestions guide you to solutions
+5. **Automation Ready**: Machine-readable JSON mode for scripts
+6. **Professional Look**: Clean, modern CLI design with Unicode symbols
+7. **Offline Mode Support**: Bot loads even without appstate.json
+
+## Offline Mode
+
+The bot now gracefully handles missing appstate.json:
+- **Continues to run** and load all commands/events
+- **Shows animated spinners** during module loading
+- **Displays clear warnings** with actionable suggestions
+- **System info** still visible even in offline mode
+
+No more crashes - the bot stays running for testing and development!

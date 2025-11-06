@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/node": "^22.13.11",
     "axios": "^1.13.1",
+    "cassidy-styler": "^1.2.6",
     "ws3-fca": "^3.5.2"
   }
 }

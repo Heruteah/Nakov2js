@@ -26,7 +26,7 @@ Preferred communication style: Simple, everyday language.
 - Requires manual cookie refresh when sessions expire
 - Tied to specific Facebook account
 
-## Bot Framework Architecture
+## Bot Framework Architecture (Updated November 6, 2025)
 
 **Problem**: Creating a scalable and maintainable command-based chatbot.
 
@@ -37,12 +37,15 @@ Preferred communication style: Simple, everyday language.
 - Commands are isolated in separate files under `modules/commands/`
 - Dynamic command loading at startup via filesystem scanning
 - Commands stored in a Map for O(1) lookup performance
+- **Offline Mode Support**: Bot continues loading and running even without valid appstate.json
 
 **Key Design Decisions**:
 1. **Dual Command Modes**: Supports both prefix-required commands (`!help`, `!poli`) and prefix-free commands (`ai`, `prefix`) via `usePrefix` flag
 2. **Self-Listen Disabled**: Bot ignores its own messages to prevent infinite loops
 3. **Message Filtering**: Only processes "message" type events with body content from other users
-4. **No Fallback Behavior**: Non-prefixed messages that don't match a command are ignored (Updated November 4, 2025)
+4. **No Fallback Behavior**: Non-prefixed messages that don't match a command are ignored
+5. **Graceful Degradation**: Missing appstate.json doesn't crash the bot - it continues in offline mode with animated loading
+6. **Animated Loading**: Uses spinners during module loading for visual feedback
 
 ## Command Module System (Updated November 5, 2025)
 
@@ -286,15 +289,22 @@ Preferred communication style: Simple, everyday language.
 - Purpose: Handles Facebook Messenger log events (user join/leave) and message events (auto-download)
 
 **utils/console.js** (Console Interface, Updated November 6, 2025)
-- Purpose: Modern CLI design with professional console output following best practices
+- Purpose: Modern CLI design with professional console output using cassidy-styler for Unicode fonts
+- Dependencies: cassidy-styler (npm package for Unicode text styling)
 - Design Principles:
-  1. **Show Progress Visually**: Tree-style loading indicators and progress bars
+  1. **Show Progress Visually**: Tree-style loading indicators, progress bars, and animated spinners
   2. **Reaction for Every Action**: Immediate feedback with timestamps for all operations
   3. **Actionable Error Messages**: Three-tier error output (message, details, suggestions)
   4. **Machine-Readable Output**: JSON mode via MACHINE_READABLE environment variable
   5. **Standard Streams (I/O)**: Errors to stderr, normal output to stdout
+- Unicode Font Styling:
+  - Banner: Bold font for "BOT", fancy font for subtitle, script font for author
+  - Section Headers: Bold Unicode (e.g., "𝗟𝗼𝗮𝗱𝗶𝗻𝗴 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀")
+  - Commands/Events: Typewriter font (e.g., "𝚊𝚒", "𝚑𝚎𝚕𝚙")
+  - Messages: Fancy font for success/info messages
+  - User IDs: Bold font for emphasis
 - Features:
-  - Compact banner (replaced large ASCII art with elegant 3-line design)
+  - Beautiful Unicode banner with special arrow symbol (➤)
   - Timestamps on all log messages [HH:MM:SS]
   - Tree-style command/event loading visualization (├─ structure)
   - Color-coded log levels (success ✓, error ✗, info ℹ, warning ⚠)
@@ -302,9 +312,10 @@ Preferred communication style: Simple, everyday language.
   - System info display (platform, Node version, memory, uptime)
   - Section headers for better organization
   - Progress bar support for long-running tasks
-  - Animated spinner support
+  - Animated spinner support for module loading
   - Machine-readable JSON output mode for automation/parsing
+  - Offline mode support (bot continues running without appstate.json)
 - Output Streams:
   - stdout: success, info, warnings, command execution logs
   - stderr: errors with details and suggestions
-- ANSI color codes used for terminal output styling
+- ANSI color codes combined with Unicode fonts for enhanced visual appeal

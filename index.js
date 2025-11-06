@@ -10,8 +10,11 @@ let credentials;
 try {
   credentials = { appState: JSON.parse(fs.readFileSync("appstate.json", "utf8")) };
 } catch (err) {
-  BotpackConsole.error("appstate.json is missing or malformed.");
-  console.error(err);
+  BotpackConsole.error(
+    "appstate.json is missing or malformed",
+    err.message,
+    "Create appstate.json with valid Facebook credentials or check file permissions"
+  );
   process.exit(1);
 }
 
@@ -19,8 +22,11 @@ let config;
 try {
   config = JSON.parse(fs.readFileSync("config.json", "utf8"));
 } catch (err) {
-  BotpackConsole.error("config.json is missing or malformed.");
-  console.error(err);
+  BotpackConsole.error(
+    "config.json is missing or malformed",
+    err.message,
+    "Create config.json with required settings (prefix, etc.)"
+  );
   process.exit(1);
 }
 
@@ -34,8 +40,11 @@ login(credentials, {
   randomUserAgent: false
 }, async (err, api) => {
   if (err) {
-    BotpackConsole.error("LOGIN FAILED!");
-    console.error(err);
+    BotpackConsole.error(
+      "Login failed",
+      err.message,
+      "Check appstate.json validity or regenerate Facebook credentials"
+    );
     return;
   }
 
@@ -44,35 +53,61 @@ login(credentials, {
 
   global.botStartTime = Date.now();
 
-  BotpackConsole.info("Loading commands...");
+  BotpackConsole.section("Loading Commands");
   const commandsDir = path.join(__dirname, "modules", "commands");
   const commands = new Map();
   global.commands = commands;
 
   if (!fs.existsSync(commandsDir)) fs.mkdirSync(commandsDir, { recursive: true });
 
-  for (const file of fs.readdirSync(commandsDir).filter(f => f.endsWith(".js"))) {
-    const command = require(path.join(commandsDir, file));
-    if (command.config && command.config.name && typeof command.run === "function") {
-      commands.set(command.config.name, command);
-      BotpackConsole.command(command.config.name);
+  const commandFiles = fs.readdirSync(commandsDir).filter(f => f.endsWith(".js"));
+  
+  for (let i = 0; i < commandFiles.length; i++) {
+    const file = commandFiles[i];
+    try {
+      const command = require(path.join(commandsDir, file));
+      if (command.config && command.config.name && typeof command.run === "function") {
+        commands.set(command.config.name, command);
+        BotpackConsole.command(command.config.name);
+      }
+    } catch (err) {
+      BotpackConsole.error(
+        `Failed to load command: ${file}`,
+        err.message,
+        "Check command file syntax and exports"
+      );
     }
   }
 
+  BotpackConsole.success(`Loaded ${commands.size} commands`);
   BotpackConsole.separator();
-  BotpackConsole.info("Loading events...");
+  
+  BotpackConsole.section("Loading Events");
   const eventsDir = path.join(__dirname, "modules", "events");
   const events = new Map();
 
   if (!fs.existsSync(eventsDir)) fs.mkdirSync(eventsDir, { recursive: true });
 
-  for (const file of fs.readdirSync(eventsDir).filter(f => f.endsWith(".js"))) {
-    const eventHandler = require(path.join(eventsDir, file));
-    if (eventHandler.name && typeof eventHandler.execute === "function") {
-      events.set(eventHandler.name, eventHandler);
-      BotpackConsole.event(eventHandler.name);
+  const eventFiles = fs.readdirSync(eventsDir).filter(f => f.endsWith(".js"));
+  
+  for (let i = 0; i < eventFiles.length; i++) {
+    const file = eventFiles[i];
+    try {
+      const eventHandler = require(path.join(eventsDir, file));
+      if (eventHandler.name && typeof eventHandler.execute === "function") {
+        events.set(eventHandler.name, eventHandler);
+        BotpackConsole.event(eventHandler.name);
+      }
+    } catch (err) {
+      BotpackConsole.error(
+        `Failed to load event: ${file}`,
+        err.message,
+        "Check event file syntax and exports"
+      );
     }
   }
+  
+  BotpackConsole.success(`Loaded ${events.size} events`);
 
   BotpackConsole.separator();
   BotpackConsole.systemInfo();
@@ -136,7 +171,11 @@ login(credentials, {
         try {
           await command.run(api, event, args, reply, react);
         } catch (error) {
-          BotpackConsole.error(`Error in ${commandName} command: ${error.message}`);
+          BotpackConsole.error(
+            `Command execution failed: ${commandName}`,
+            error.message,
+            `Check the ${commandName} command implementation`
+          );
           api.sendMessage("❌ Error processing your command.", event.threadID, event.messageID);
         }
       } else {
@@ -153,7 +192,11 @@ login(credentials, {
           try {
             await welcomeEvent.execute({ api, event, config });
           } catch (error) {
-            BotpackConsole.error(`Error in welcome event: ${error.message}`);
+            BotpackConsole.error(
+              "Welcome event failed",
+              error.message,
+              "Check welcome.js implementation"
+            );
           }
         }
         
@@ -161,7 +204,11 @@ login(credentials, {
           try {
             await jointnotiEvent.execute({ api, event, config });
           } catch (error) {
-            BotpackConsole.error(`Error in jointnoti event: ${error.message}`);
+            BotpackConsole.error(
+              "Join notification event failed",
+              error.message,
+              "Check jointnoti.js implementation"
+            );
           }
         }
       } else if (event.logMessageType === "log:unsubscribe") {
@@ -171,7 +218,11 @@ login(credentials, {
           try {
             await leavenotiEvent.execute({ api, event, config });
           } catch (error) {
-            BotpackConsole.error(`Error in leavenoti event: ${error.message}`);
+            BotpackConsole.error(
+              "Leave notification event failed",
+              error.message,
+              "Check leavenoti.js implementation"
+            );
           }
         }
       }
@@ -183,7 +234,11 @@ login(credentials, {
       try {
         await alldlEvent.execute({ api, event, config });
       } catch (error) {
-        BotpackConsole.error(`Error in alldl event: ${error.message}`);
+        BotpackConsole.error(
+          "Auto-download event failed",
+          error.message,
+          "Check alldl.js implementation"
+        );
       }
     }
   });

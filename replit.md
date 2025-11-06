@@ -285,14 +285,26 @@ Preferred communication style: Simple, everyday language.
 - Loaded: At bot startup via dynamic require()
 - Purpose: Handles Facebook Messenger log events (user join/leave) and message events (auto-download)
 
-**utils/console.js** (Console Interface, Added November 5, 2025)
-- Purpose: Botpack-style console design with colors and visual elements
+**utils/console.js** (Console Interface, Updated November 6, 2025)
+- Purpose: Modern CLI design with professional console output following best practices
+- Design Principles:
+  1. **Show Progress Visually**: Tree-style loading indicators and progress bars
+  2. **Reaction for Every Action**: Immediate feedback with timestamps for all operations
+  3. **Actionable Error Messages**: Three-tier error output (message, details, suggestions)
+  4. **Machine-Readable Output**: JSON mode via MACHINE_READABLE environment variable
+  5. **Standard Streams (I/O)**: Errors to stderr, normal output to stdout
 - Features:
-  - ASCII art banner with bot branding
-  - Color-coded log levels (success, error, info, warning)
-  - Visual separators for better readability
-  - System info display (platform, Node version, memory usage)
-  - Command and event loading indicators
-  - Execution tracking with user IDs
-  - Download event logging
+  - Compact banner (replaced large ASCII art with elegant 3-line design)
+  - Timestamps on all log messages [HH:MM:SS]
+  - Tree-style command/event loading visualization (├─ structure)
+  - Color-coded log levels (success ✓, error ✗, info ℹ, warning ⚠)
+  - Enhanced error handling with details and actionable suggestions
+  - System info display (platform, Node version, memory, uptime)
+  - Section headers for better organization
+  - Progress bar support for long-running tasks
+  - Animated spinner support
+  - Machine-readable JSON output mode for automation/parsing
+- Output Streams:
+  - stdout: success, info, warnings, command execution logs
+  - stderr: errors with details and suggestions
 - ANSI color codes used for terminal output styling

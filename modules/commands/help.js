@@ -34,13 +34,13 @@ module.exports = {
     }
     
     if (prefixCommands.length > 0) {
-      helpMessage += "🔹 Prefix Commands:\n";
+      helpMessage += "✅ Prefix Commands:\n";
       prefixCommands.forEach(cmd => helpMessage += `${cmd}\n`);
       helpMessage += "\n";
     }
     
     if (noPrefixCommands.length > 0) {
-      helpMessage += "🔸 No Prefix Needed:\n";
+      helpMessage += "❎ No Prefix Needed:\n";
       noPrefixCommands.forEach(cmd => helpMessage += `${cmd}\n`);
       helpMessage += "\n";
     }

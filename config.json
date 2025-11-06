@@ -1,5 +1,5 @@
 {
-  "prefix": "!",
+  "prefix": "-",
   "invalidCommandMessage": "❌ Invalid command. Type !help to see available commands.",
   "botName": "Facebook Bot",
   "admin": ["100077070762554"]

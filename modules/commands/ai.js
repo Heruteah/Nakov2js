@@ -23,14 +23,20 @@ module.exports = {
       const res = await axios.get(url);
 
       if (!res.data || !res.data.status) {
-        return api.editMessage("⚠️ The AI didn't respond properly.", waitingMsg.messageID, event.threadID);
+        const errMsg = res.data?.message || res.data?.error || "⚠️ The AI returned an invalid response.";
+        return api.editMessage(errMsg, waitingMsg.messageID, event.threadID);
       }
 
-      const text = res.data.data?.text || "🤖 The AI had no response.";
+      const text = res.data.data?.text || res.data.message || "⚠️ Empty response from AI.";
       api.editMessage(text, waitingMsg.messageID, event.threadID);
+
     } catch (err) {
-      console.error("AI Command Error:", err);
-      reply("❌ Error contacting the AI API.");
+      console.error("❎ Error:", err);
+      const errMessage = err.response?.data?.error || 
+                         err.response?.data?.message || 
+                         err.message || 
+                         "Unknown error occurred.";
+      reply(`❌ Error contacting the AI API:\n\n${errMessage}`);
     }
   }
 };

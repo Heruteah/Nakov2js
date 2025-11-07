@@ -31,7 +31,7 @@ module.exports = {
       const text = res.data.data?.text || res.data.message || "⚠️ Empty response from AI.";
       
       const formattedResponse = format({
-        title: 'COPILOT AI',
+        title: '🖤 COPILOT AI',
         titleFont: 'bold',
         content: text,
         contentFont: 'fancy'

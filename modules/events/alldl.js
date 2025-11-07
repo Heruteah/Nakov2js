@@ -11,7 +11,6 @@ module.exports = {
       
       const messageBody = event.body.trim();
       
-      // Detect Facebook or TikTok links
       const facebookRegex = /(https?:\/\/)?(www\.)?(facebook\.com|fb\.watch|fb\.com|m\.facebook\.com)\/[^\s]+/gi;
       const tiktokRegex = /(https?:\/\/)?(www\.)?(tiktok\.com|vt\.tiktok\.com|vm\.tiktok\.com)\/[^\s]+/gi;
       
@@ -31,11 +30,9 @@ module.exports = {
       
       if (!detectedUrl) return;
       
-      // Log download attempt
       const ioa39rkdevbot = require("../../utils/console");
       ioa39rkdevbot.download(platform, event.senderID);
       
-      // Send processing message (without reply to get message object back)
       const processingMsg = await api.sendMessage(
         `📥 ${FontSystem.applyFonts('Detected', 'fancy')} ${FontSystem.applyFonts(platform, 'bold')} ${FontSystem.applyFonts('link! Downloading video...', 'fancy')}`,
         event.threadID
@@ -44,7 +41,6 @@ module.exports = {
       let videoPath = null;
       
       try {
-        // Call the API
         const apiUrl = `https://api-library-kohi.onrender.com/api/alldl?url=${encodeURIComponent(detectedUrl)}`;
         const response = await axios.get(apiUrl, { timeout: 60000 });
         
@@ -62,20 +58,17 @@ module.exports = {
         const videoUrl = response.data.data.videoUrl;
         const detectedPlatform = response.data.data.platform || platform;
         
-        // Download the video
         const videoResponse = await axios.get(videoUrl, {
           responseType: 'arraybuffer',
           timeout: 120000
         });
         
-        // Save to temp directory
         const tempDir = path.join(__dirname, "../../temp");
         if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
         
         videoPath = path.join(tempDir, `alldl_${Date.now()}.mp4`);
         fs.writeFileSync(videoPath, videoResponse.data);
         
-        // Send the video
         await api.sendMessage(
           {
             body: `✅ ${FontSystem.applyFonts('Downloaded', 'fancy')} ${FontSystem.applyFonts(detectedPlatform, 'bold')} ${FontSystem.applyFonts('video successfully!', 'fancy')} 🎉`,
@@ -85,12 +78,10 @@ module.exports = {
           event.messageID
         );
         
-        // Delete processing message
         if (processingMsg && processingMsg.messageID) {
           api.unsendMessage(processingMsg.messageID);
         }
         
-        // Clean up video file after 5 seconds
         setTimeout(() => {
           if (videoPath && fs.existsSync(videoPath)) {
             fs.unlinkSync(videoPath);
@@ -100,7 +91,6 @@ module.exports = {
       } catch (error) {
         console.error("Auto-download error:", error.message);
         
-        // Clean up temp file on error
         if (videoPath && fs.existsSync(videoPath)) {
           try {
             fs.unlinkSync(videoPath);
@@ -109,7 +99,6 @@ module.exports = {
           }
         }
         
-        // Update or send error message
         if (processingMsg && processingMsg.messageID) {
           api.editMessage(
             `❌ ${FontSystem.applyFonts('Error downloading', 'fancy')} ${FontSystem.applyFonts(platform, 'bold')} ${FontSystem.applyFonts('video:', 'fancy')} ${error.message}`,

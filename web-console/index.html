@@ -194,6 +194,17 @@
             font-weight: bold;
         }
 
+        .log-entry.gradient {
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #4facfe, #00f2fe, #667eea);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
         .timestamp {
             color: #888;
             margin-right: 10px;
@@ -366,7 +377,7 @@
         eventSource.onopen = function() {
             statusIndicator.className = 'status connected';
             statusIndicator.textContent = '● Connected';
-            addLog('Connected to bot console', 'success');
+            addLog('Connected to log stream', 'success');
         };
 
         eventSource.onmessage = function(event) {
@@ -394,7 +405,11 @@
         addLog('║  𝗕𝗢𝗧 ➤ 𝖥𝖺𝖼𝖾𝖻𝗈𝗈𝗄 𝖬𝖾𝗌𝗌𝖾𝗇𝗀𝖾𝗋 𝖡𝗈𝗍  ║', 'banner');
         addLog('║  𝑏𝑦 𝑖𝑜𝑎39𝑟𝑘𝑑𝑒𝑣                      ║', 'banner');
         addLog('╚═══════════════════════════════════════╝', 'banner');
-        addLog('Web Console initialized', 'success');
+        // Add gradient BOT RUNNING text
+        const botRunningEntry = document.createElement('div');
+        botRunningEntry.className = 'log-entry gradient';
+        botRunningEntry.textContent = '🚀 BOT RUNNING';
+        logsContainer.appendChild(botRunningEntry);
         addLog('Waiting for bot events...', 'info');
     </script>
 </body>

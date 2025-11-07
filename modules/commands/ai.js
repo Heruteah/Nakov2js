@@ -4,7 +4,7 @@ const { format, FontSystem } = require('cassidy-styler');
 module.exports = {
   config: {
     name: "ai",
-    description: "Chat with AI freely, no prefix needed.",
+    description: "Chat with AI",
     usage: "ai <question>",
     cooldown: 3,
     role: 0,
@@ -31,7 +31,7 @@ module.exports = {
       const text = res.data.data?.text || res.data.message || "⚠️ Empty response from AI.";
       
       const formattedResponse = format({
-        title: '🤖 AI Response',
+        title: 'COPILOT AI',
         titleFont: 'bold',
         content: text,
         contentFont: 'fancy'

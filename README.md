@@ -283,7 +283,7 @@ The bot automatically detects and downloads videos from:
 ## 🧑‍💻 Developer
 
 **Name**: ioa39rkdev  
-**Facebook**: [@ioa39rkdev](https://facebook.com/ioa39rkdev)  
+**Facebook**: [@ioa39rkdev](https://www.facebook.com/ioa39rkdev.00)  
 **Expertise**: Facebook Messenger Bots, Node.js, Modular Architecture
 
 ---

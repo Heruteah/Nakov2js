@@ -1,333 +1,399 @@
 # 🤖 Facebook Messenger Bot
 
+A beautiful, modular Facebook Messenger bot with elegant Unicode styling, real-time web dashboard, and intelligent automation features.
+
+**Developer**: [ioa39rkdev](https://facebook.com/ioa39rkdev)
+
+---
+
 ## ✨ Features
 
-- 🎨 **Beautiful Unicode Styling** - Powered by cassidy-styler for elegant command responses
-- 🌐 **Web Console Dashboard** - Real-time monitoring at http://localhost:5000
-- 📦 **Modular Commands** - Easy-to-add command system
-- 🎭 **Event Handlers** - Welcome messages, join/leave notifications
-- 🔄 **Offline Mode** - Bot loads even without Facebook credentials
-- ⚡ **Animated Loading** - Spinners and progress indicators
-- 🎯 **Prefix Support** - Commands with or without prefixes
-- ❄️ **Cooldown System** - Prevent command spam
+- 🎨 **Beautiful Unicode Styling** - All commands and events use cassidy-styler for elegant formatted responses
+- 🌐 **Web Console Dashboard** - Real-time monitoring with Server-Sent Events (SSE)
+- 📦 **Modular Architecture** - Easy-to-add command and event system
+- 🎭 **Smart Event Handlers** - Welcome messages, join/leave notifications, auto-downloads
+- 🔄 **Offline Mode** - Bot loads even without Facebook credentials for testing
+- ⚡ **Animated Console** - Spinners, progress bars, and colorful terminal output
+- 🎯 **Dual Prefix System** - Commands with or without prefixes
+- ❄️ **Cooldown Protection** - Per-command spam prevention
+- 🤖 **AI Integration** - GPT-5 conversational AI and image generation
+- 📥 **Auto-Download** - Automatic video downloads from Facebook and TikTok
 
-## 🌐 Web Console
+---
 
-Access the beautiful web dashboard at `http://localhost:5000`:
-- **Real-time logs** with color coding
-- **Live statistics** (total logs, success, errors, warnings, uptime)
-- **Filter logs** by type (all, errors, warnings, success)
-- **Modern UI** with gradients and glassmorphism
+## 📋 Available Commands
 
-See `WEB_CONSOLE_GUIDE.md` for full documentation.
+All commands now feature beautiful Unicode formatting with cassidy-styler!
 
-## 📚 Command Structure Documentation
+| Command | Prefix | Description | Permission |
+|---------|--------|-------------|------------|
+| `ai` | ❌ No | Chat with GPT-5 AI assistant | Everyone |
+| `help` | ✅ Yes | Display all available commands | Everyone |
+| `poli` | ✅ Yes | Generate AI images from text prompts | Everyone |
+| `prefix` | ❌ No | Show current command prefix | Everyone |
+| `uid` | ✅ Yes | Get your Facebook user ID | Everyone |
+| `uptime` | ✅ Yes | Display detailed bot runtime statistics | Everyone |
 
-This Facebook Messenger bot uses a modular command system with a standardized structure. Commands are dynamically loaded from the `modules/commands/` directory.
+**Total**: 6 commands with elegant styling
 
-All commands and events now use **cassidy-styler** for beautiful Unicode formatted responses!
+---
 
-## Command Structure
+## 🎭 Event Handlers
 
-Every command file must follow this structure:
+All events feature professional Unicode formatting!
+
+- **Welcome** - Greets new members joining the group
+- **Join Notification** - Bot introduces itself when added to a thread
+- **Leave Notification** - Announces when members leave
+- **Auto-Download** - Automatically downloads videos from Facebook and TikTok links
+
+**Total**: 4 events with consistent styling
+
+---
+
+## 🌐 Web Console Dashboard
+
+Access the real-time monitoring dashboard at `http://localhost:5000`:
+
+- 📊 **Live Statistics** - Total logs, success count, errors, warnings, uptime
+- 🎨 **Color-Coded Logs** - Green (success), red (error), yellow (warning), blue (info)
+- 🔍 **Log Filtering** - Filter by type: All, Errors, Warnings, Success
+- ✨ **Modern UI** - Glassmorphism design with gradients and animations
+- 📡 **Real-Time Updates** - Server-Sent Events (SSE) for instant log streaming
+- 📈 **System Monitoring** - Platform, Node version, memory usage, uptime tracking
+
+---
+
+## 🎨 Styling System
+
+Every command and event uses **cassidy-styler** for beautiful Unicode text formatting:
+
+### Available Font Styles
+- **Bold** (`𝗕𝗼𝗹𝗱`) - For titles and emphasis
+- **Fancy** (`𝖥𝖺𝗇𝖼𝗒`) - For elegant content text
+- **Typewriter** (`𝚃𝚢𝚙𝚎𝚠𝚛𝚒𝚝𝚎𝚛`) - For code and commands
+- **Script** (`𝓢𝓬𝓻𝓲𝓹𝓽`) - For signatures and special text
+- **Double Struck** (`𝟙𝟚𝟛`) - For numbers and stats
+
+### Message Format
+All responses follow a consistent structure:
+```
+╔═══════════════════════════════╗
+║  𝗧𝗶𝘁𝗹𝗲                        ║
+╚═══════════════════════════════╝
+
+𝖢𝗈𝗇𝗍𝖾𝗇𝗍 𝗍𝖾𝗑𝗍 𝗁𝖾𝗋𝖾...
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js v20+
+- Facebook account
+- Facebook session cookies (appstate.json)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd facebook-messenger-bot
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure the bot**
+   
+   Edit `config.json`:
+   ```json
+   {
+     "prefix": "-",
+     "botName": "🌸 WAGUBOT",
+     "admin": ["YOUR_FACEBOOK_USER_ID"]
+   }
+   ```
+
+4. **Add Facebook credentials**
+   
+   Create `appstate.json` with your Facebook session cookies:
+   ```json
+   [
+     {
+       "key": "c_user",
+       "value": "your-user-id"
+     }
+   ]
+   ```
+
+5. **Start the bot**
+   ```bash
+   node index.js
+   ```
+
+6. **Access the dashboard**
+   
+   Open `http://localhost:5000` in your browser
+
+---
+
+## 📁 Project Structure
+
+```
+facebook-messenger-bot/
+├── index.js                    # Main bot entry point
+├── config.json                 # Bot configuration
+├── appstate.json              # Facebook session cookies (gitignored)
+├── package.json               # Dependencies
+├── README.md                  # This file
+├── replit.md                  # Technical documentation
+│
+├── utils/
+│   └── console.js             # ioa39rkdevbot console class (styled output)
+│
+├── web-console/
+│   └── server.js              # Web dashboard server (SSE, real-time logs)
+│
+├── modules/
+│   ├── commands/              # Command modules
+│   │   ├── ai.js             # GPT-5 AI chat (no prefix)
+│   │   ├── help.js           # Command list (prefix)
+│   │   ├── poli.js           # AI image generation (prefix)
+│   │   ├── prefix.js         # Show prefix (no prefix)
+│   │   ├── uid.js            # Get user ID (prefix)
+│   │   └── uptime.js         # Runtime stats (prefix)
+│   │
+│   └── events/               # Event handlers
+│       ├── alldl.js          # Auto-download videos
+│       ├── jointnoti.js      # Bot join notification
+│       ├── leavenoti.js      # Leave notification
+│       └── welcome.js        # Welcome new members
+│
+└── temp/                     # Temporary files (auto-created)
+```
+
+---
+
+## 🛠️ Creating Custom Commands
+
+### Command Template
+
+Create a new file in `modules/commands/`:
 
 ```javascript
+const { format, FontSystem } = require('cassidy-styler');
+
 module.exports = {
   config: {
-    name: "commandname",        // Command name (lowercase, no spaces)
-    description: "Description",  // Brief description of what the command does
-    usage: "commandname <args>", // How to use the command
-    cooldown: 5,                 // Cooldown in seconds (default: 3)
-    role: 0,                     // Permission level (0 = everyone, 1 = admin)
-    prefix: true                 // true = requires prefix, false = no prefix
-  },
-  run: async (api, event, args, reply, react) => {
-    // Your command logic here
-  }
-};
-```
-
-### Config Properties
-
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | String | ✅ | Command identifier (used to call the command) |
-| `description` | String | ✅ | Brief description shown in help command |
-| `usage` | String | ✅ | Usage example with arguments |
-| `cooldown` | Number | ✅ | Cooldown time in seconds between uses |
-| `role` | Number | ✅ | Permission level (0=everyone, 1=admin) |
-| `prefix` | Boolean | ✅ | Whether command requires prefix or not |
-
-### Run Function Parameters
-
-The `run` function receives 5 parameters:
-
-```javascript
-run: async (api, event, args, reply, react) => { }
-```
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `api` | Object | Facebook Chat API instance |
-| `event` | Object | Message event object containing sender info, thread ID, etc. |
-| `args` | Array | Array of arguments from user message (split by spaces) |
-| `reply` | Function | Helper function to quickly reply to the message |
-| `react` | Function | Helper function to react to the message with emoji |
-
-## Helper Functions
-
-### reply(message)
-
-Quick way to send a reply to the user:
-
-```javascript
-reply("Hello, world!");
-// Equivalent to:
-api.sendMessage("Hello, world!", event.threadID, event.messageID);
-```
-
-### react(emoji)
-
-React to the message with an emoji:
-
-```javascript
-react("👍");
-react("❤️");
-```
-
-## Example Commands
-
-### Basic Command (With Prefix)
-
-```javascript
-module.exports = {
-  config: {
-    name: "hello",
-    description: "Say hello to the bot",
-    usage: "hello",
-    cooldown: 3,
-    role: 0,
-    prefix: true
-  },
-  run: async (api, event, args, reply, react) => {
-    reply("Hello! 👋");
-  }
-};
-```
-
-Usage: `!hello`
-
-### Command Without Prefix
-
-```javascript
-module.exports = {
-  config: {
-    name: "ai",
-    description: "Chat with AI",
-    usage: "ai <question>",
+    name: "commandname",
+    description: "What this command does",
+    usage: "commandname <args>",
     cooldown: 5,
     role: 0,
-    prefix: false
-  },
-  run: async (api, event, args, reply, react) => {
-    const question = args.join(" ");
-    if (!question) return reply("Please provide a question");
-    
-    // AI logic here
-    reply("AI response...");
-  }
-};
-```
-
-Usage: `ai what is the weather?` (no prefix needed)
-
-### Command With Arguments
-
-```javascript
-module.exports = {
-  config: {
-    name: "echo",
-    description: "Echo your message",
-    usage: "echo <message>",
-    cooldown: 3,
-    role: 0,
     prefix: true
   },
   run: async (api, event, args, reply, react) => {
-    const message = args.join(" ");
-    
-    if (!message) {
-      return reply("Please provide a message to echo");
-    }
+    const message = format({
+      title: '🎯 Command Title',
+      titleFont: 'bold',
+      content: `${FontSystem.applyFonts('Your content here', 'fancy')}`,
+      contentFont: 'none'
+    });
     
     reply(message);
   }
 };
 ```
 
-Usage: `!echo Hello everyone!`
+### Command Properties
 
-### Command With External API
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | String | Command identifier (lowercase, no spaces) |
+| `description` | String | Brief description for help command |
+| `usage` | String | Usage example with arguments |
+| `cooldown` | Number | Seconds between command uses |
+| `role` | Number | Permission (0=everyone, 1=admin, 2=super admin) |
+| `prefix` | Boolean | Requires prefix or not |
+
+### Function Parameters
 
 ```javascript
-const axios = require("axios");
+run: async (api, event, args, reply, react) => { }
+```
+
+- **api** - Facebook Chat API instance
+- **event** - Message event object (senderID, threadID, body, etc.)
+- **args** - Array of arguments from message
+- **reply(message)** - Quick reply function
+- **react(emoji)** - React to message with emoji
+
+---
+
+## 🎨 Creating Custom Events
+
+### Event Template
+
+Create a new file in `modules/events/`:
+
+```javascript
+const { format, FontSystem } = require('cassidy-styler');
 
 module.exports = {
-  config: {
-    name: "weather",
-    description: "Get weather information",
-    usage: "weather <city>",
-    cooldown: 10,
-    role: 0,
-    prefix: true
-  },
-  run: async (api, event, args, reply, react) => {
-    const city = args.join(" ");
+  name: "eventname",
+  execute: async ({ api, event, config }) => {
+    const message = format({
+      title: '🎉 Event Title',
+      titleFont: 'bold',
+      content: `${FontSystem.applyFonts('Event content', 'fancy')}`,
+      contentFont: 'none'
+    });
     
-    if (!city) {
-      return reply("Please provide a city name");
-    }
-    
-    try {
-      react("⏳");
-      
-      const response = await axios.get(`https://api.example.com/weather?city=${city}`);
-      const weatherData = response.data;
-      
-      reply(`Weather in ${city}: ${weatherData.temp}°C`);
-      react("✅");
-    } catch (error) {
-      console.error("Weather API Error:", error);
-      reply("❌ Failed to get weather data");
-    }
+    await api.sendMessage(message, event.threadID);
   }
 };
 ```
 
-Usage: `!weather New York`
+---
 
-## Accessing Event Properties
+## 🔧 Configuration
 
-Common event properties you can use:
-
-```javascript
-event.senderID       // User's Facebook ID
-event.threadID       // Conversation/group thread ID
-event.messageID      // Message ID
-event.body           // Full message text
-event.isGroup        // true if message is in a group
-event.messageReply   // Replied message object (if replying to a message)
-```
-
-## Using API Methods
-
-Common Facebook Chat API methods:
-
-```javascript
-// Send message
-api.sendMessage("Hello", event.threadID);
-
-// Send message with attachment
-api.sendMessage({
-  body: "Here's an image",
-  attachment: fs.createReadStream("image.jpg")
-}, event.threadID);
-
-// Edit message
-api.editMessage("New text", messageID, event.threadID);
-
-// Unsend message
-api.unsendMessage(messageID);
-
-// Set nickname
-api.changeNickname("New Nickname", event.threadID, event.senderID);
-
-// Get user info
-api.getUserInfo(event.senderID, (err, data) => {
-  console.log(data);
-});
-```
-
-## File Structure
-
-```
-project/
-├── index.js                    # Main bot file
-├── config.json                 # Bot configuration
-├── appstate.json              # Facebook session cookies
-├── package.json               # Dependencies
-├── README.md                  # This file
-├── utils/
-│   └── console.js             # Botpack-style console interface
-└── modules/
-    ├── commands/              # Command files
-    │   ├── ai.js
-    │   ├── help.js
-    │   ├── poli.js
-    │   ├── prefix.js
-    │   ├── uid.js
-    │   └── uptime.js
-    └── events/                # Event handlers
-        ├── welcome.js
-        ├── leavenoti.js
-        ├── jointnoti.js
-        └── alldl.js           # Auto-download videos
-```
-
-## Adding New Commands
-
-1. Create a new `.js` file in `modules/commands/`
-2. Follow the command structure template
-3. Restart the bot
-4. The command will be automatically loaded
-
-## Configuration (config.json)
+### config.json
 
 ```json
 {
-  "prefix": "!",
-  "invalidCommandMessage": "❌ Invalid command. Type !help to see available commands.",
-  "botName": "Facebook Bot",
-  "botNickname": "🤖 Bot",
-  "cooldownTime": 3,
-  "admin": []
+  "prefix": "-",
+  "invalidCommandMessage": "❌ Invalid command. Type -help to see available commands.",
+  "botName": "🌸 WAGUBOT",
+  "admin": ["100077070762554"]
 }
 ```
 
-## Features
+### Environment Variables
 
-- ✅ Automatic command loading
-- ✅ Per-command cooldown system
-- ✅ Prefix and non-prefix commands
-- ✅ Role-based permissions (future feature)
-- ✅ Helper functions for quick replies
-- ✅ Individual cooldown per command
-- ✅ Error handling
-- ✅ Botpack-style colorful console interface
-- ✅ Auto-download videos from Facebook and TikTok links
-- ✅ Event-based automation (welcome, leave, join notifications)
+- `MACHINE_READABLE=true` - Enable JSON log output for programmatic consumption
 
-## Auto-Download Feature
+---
+
+## 📥 Auto-Download Feature
 
 The bot automatically detects and downloads videos from:
-- **Facebook**: facebook.com, fb.watch, m.facebook.com
-- **TikTok**: tiktok.com, vt.tiktok.com, vm.tiktok.com
 
-Just send a link to a video in the chat, and the bot will automatically download and send it!
+**Supported Platforms:**
+- Facebook (facebook.com, fb.watch, m.facebook.com)
+- TikTok (tiktok.com, vt.tiktok.com, vm.tiktok.com)
 
-## Console Interface
+**How it works:**
+1. User sends a message containing a video link
+2. Bot detects the platform using regex
+3. Downloads video via API
+4. Sends video to the chat with styled message
+5. Auto-deletes temporary file after 5 seconds
 
-The bot features a Botpack-style console with:
-- 🎨 ASCII art banner
-- 🌈 Color-coded log levels
-- 📊 System information display
-- 📝 Command and event tracking
-- ⚡ Real-time execution logs
+---
 
-## Notes
+## 🎯 API Integrations
 
-- Command names must be lowercase and unique
-- Files must end with `.js` extension
-- Commands are loaded on bot startup (restart required for changes)
-- Cooldowns are tracked per user per command
-- Use `console.error()` for debugging errors
+### External APIs Used
+
+- **Copilot AI** - GPT-5 conversational AI with history
+  - Endpoint: `api-library-kohi.onrender.com/api/copilot`
+  - Model: GPT-5
+  - Features: User-specific conversations
+
+- **Pollinations AI** - Text-to-image generation
+  - Endpoint: `api-library-kohi.onrender.com/api/pollinations`
+  - Model: Flux
+  - Features: High-quality AI image generation
+
+- **All Downloader** - Universal media downloader
+  - Endpoint: `api-library-kohi.onrender.com/api/alldl`
+  - Platforms: Facebook, TikTok
+  - Features: Video URL extraction and download
+
+---
+
+## 🧑‍💻 Developer
+
+**Name**: ioa39rkdev  
+**Facebook**: [@ioa39rkdev](https://facebook.com/ioa39rkdev)  
+**Expertise**: Facebook Messenger Bots, Node.js, Modular Architecture
+
+---
+
+## 📦 Dependencies
+
+- **ws3-fca** (v3.5.2) - Facebook Chat API wrapper
+- **cassidy-styler** (v1.2.6) - Unicode text styling library
+- **axios** (v1.13.1) - HTTP client for API calls
+- **@types/node** (v22.13.11) - TypeScript definitions for Node.js
+
+---
+
+## 🌟 Features in Detail
+
+### Console System (ioa39rkdevbot)
+Custom console class exported from `utils/console.js`:
+- Styled banners and section headers
+- Animated spinners for loading states
+- Color-coded log levels (success, error, warning, info)
+- System information display
+- Machine-readable JSON output mode
+- Web console broadcasting for real-time monitoring
+
+### Cooldown System
+- Per-user per-command cooldown tracking
+- Prevents spam and rate limiting
+- Configurable cooldown times per command
+- User-friendly cooldown messages with time remaining
+
+### Error Handling
+- Try-catch blocks in all commands and events
+- Graceful error messages with styling
+- Detailed console error logging
+- Fallback to offline mode when credentials unavailable
+
+---
+
+## 📝 Notes
+
+- Commands are loaded dynamically at startup
+- Restart bot to apply new commands
+- All text responses use Unicode styling for consistency
+- Session cookies stored securely in appstate.json
+- Web console uses Server-Sent Events for real-time updates
+- Temporary media files auto-deleted after sending
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Add your command/event following the template
+4. Ensure proper Unicode styling using cassidy-styler
+5. Test thoroughly
+6. Submit a pull request
+
+---
+
+## 📄 License
+
+MIT License - Free to use and modify
+
+---
+
+## 🙏 Credits
+
+- **Developer**: ioa39rkdev
+- **Styling Library**: cassidy-styler
+- **Facebook API**: ws3-fca (NethWs3Dev)
+- **External APIs**: api-library-kohi.onrender.com
+
+---
+
+**Made with ❤️ by ioa39rkdev**

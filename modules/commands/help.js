@@ -40,14 +40,14 @@ module.exports = {
     }
     
     if (noPrefixCommands.length > 0) {
-      content += FontSystem.applyFonts('❎ No Prefix Needed:', 'fancy') + '\n';
+      content += FontSystem.applyFonts('❎ No Prefix', 'fancy') + '\n';
       content += noPrefixCommands.join('\n') + '\n\n';
     }
     
     content += `💡 ${FontSystem.applyFonts('Tip:', 'bold')} Type ${FontSystem.applyFonts(config.prefix + 'commandname', 'typewriter')} to use a command`;
     
     const helpMessage = format({
-      title: `📋 Commands (${commands.size})`,
+      title: `📋 All Commands (${commands.size})`,
       titleFont: 'bold',
       content: content,
       contentFont: 'none',

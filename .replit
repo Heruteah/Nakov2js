@@ -32,12 +32,13 @@ args = "bot"
 name = "bot"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "webview"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "node index.js"
-
-[workflows.workflow.metadata]
-outputType = "console"
+waitForPort = 5000
 
 [[ports]]
 localPort = 3000
@@ -48,5 +49,5 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 43185
+localPort = 44129
 externalPort = 3000

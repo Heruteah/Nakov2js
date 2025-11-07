@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.WEB_CONSOLE_PORT || 5000;
+const PORT = 5000;
 const clients = [];
 
 const server = http.createServer((req, res) => {
@@ -46,9 +46,8 @@ function broadcastLog(message, type = 'info') {
 
 global.webConsoleBroadcast = broadcastLog;
 
-server.listen(PORT, () => {
-  console.log(`🌐 Web running at http://localhost:${PORT}`);
-  console.log(`📊 Open your browser to view real-time logs`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🌐 Web running at http://0.0.0.0:${PORT}`);
 });
 
 module.exports = { broadcastLog };

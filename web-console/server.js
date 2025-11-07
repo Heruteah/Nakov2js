@@ -47,7 +47,7 @@ function broadcastLog(message, type = 'info') {
 global.webConsoleBroadcast = broadcastLog;
 
 server.listen(PORT, () => {
-  console.log(`🌐 Web Console running at http://localhost:${PORT}`);
+  console.log(`🌐 Web running at http://localhost:${PORT}`);
   console.log(`📊 Open your browser to view real-time logs`);
 });
 

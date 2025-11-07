@@ -47,7 +47,7 @@ function broadcastLog(message, type = 'info') {
 global.webConsoleBroadcast = broadcastLog;
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`🌐 Web running at http://0.0.0.0:${PORT}`);
+  console.log(`🌐 Web running at http://0.0.0.0`);
 });
 
 module.exports = { broadcastLog };

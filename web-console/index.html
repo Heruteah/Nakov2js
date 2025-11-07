@@ -33,9 +33,35 @@
         }
 
         .header h1 {
-            font-size: 2em;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #4facfe, #00f2fe, #667eea);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: none;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .developer-credit {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .stats {
@@ -209,7 +235,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 BOT Web Console</h1>
+            <h1>🤖 BOT WEB</h1>
+            <div class="developer-credit">DEVELOPED BY IOA39RKDEV</div>
         </div>
 
         <div class="stats">

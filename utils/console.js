@@ -24,7 +24,7 @@ const COLORS = {
   bgWhite: '\x1b[47m'
 };
 
-class BotpackConsole {
+class ioa39rkdevbot {
   static machineReadable = process.env.MACHINE_READABLE === 'true';
   static startTime = Date.now();
   
@@ -262,4 +262,4 @@ class BotpackConsole {
   }
 }
 
-module.exports = BotpackConsole;
+module.exports = ioa39rkdevbot;

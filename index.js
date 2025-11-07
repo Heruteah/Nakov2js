@@ -1,12 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 const { login } = require("ws3-fca");
-const BotpackConsole = require("./utils/console");
+const ioa39rkdevbot = require("./utils/console");
 
 require("./web-console/server");
 
 console.clear();
-BotpackConsole.banner();
+ioa39rkdevbot.banner();
 
 global.botStartTime = Date.now();
 
@@ -17,7 +17,7 @@ try {
   credentials = { appState: JSON.parse(fs.readFileSync("appstate.json", "utf8")) };
   hasAppState = true;
 } catch (err) {
-  BotpackConsole.warning(
+  ioa39rkdevbot.warning(
     "appstate.json not found - Running in offline mode",
     "Create appstate.json with valid Facebook credentials to enable bot functionality"
   );
@@ -28,7 +28,7 @@ let config;
 try {
   config = JSON.parse(fs.readFileSync("config.json", "utf8"));
 } catch (err) {
-  BotpackConsole.error(
+  ioa39rkdevbot.error(
     "config.json is missing or malformed",
     err.message,
     "Create config.json with required settings (prefix, etc.)"
@@ -37,13 +37,13 @@ try {
 }
 
 async function loadModules() {
-  const spinner = BotpackConsole.spinner("Initializing modules...");
+  const spinner = ioa39rkdevbot.spinner("Initializing modules...");
   
   await new Promise(resolve => setTimeout(resolve, 800));
   
   spinner.stop();
   
-  BotpackConsole.section("Loading Commands");
+  ioa39rkdevbot.section("Loading Commands");
   const commandsDir = path.join(__dirname, "modules", "commands");
   const commands = new Map();
   global.commands = commands;
@@ -52,7 +52,7 @@ async function loadModules() {
 
   const commandFiles = fs.readdirSync(commandsDir).filter(f => f.endsWith(".js"));
   
-  const loadSpinner = BotpackConsole.spinner(`Loading ${commandFiles.length} command files...`);
+  const loadSpinner = ioa39rkdevbot.spinner(`Loading ${commandFiles.length} command files...`);
   
   for (let i = 0; i < commandFiles.length; i++) {
     const file = commandFiles[i];
@@ -65,7 +65,7 @@ async function loadModules() {
       }
     } catch (err) {
       loadSpinner.stop();
-      BotpackConsole.error(
+      ioa39rkdevbot.error(
         `Failed to load command: ${file}`,
         err.message,
         "Check command file syntax and exports"
@@ -77,13 +77,13 @@ async function loadModules() {
   loadSpinner.stop();
   
   commands.forEach((cmd) => {
-    BotpackConsole.command(cmd.config.name);
+    ioa39rkdevbot.command(cmd.config.name);
   });
 
-  BotpackConsole.success(`Loaded ${commands.size} commands`);
-  BotpackConsole.separator();
+  ioa39rkdevbot.success(`Loaded ${commands.size} commands`);
+  ioa39rkdevbot.separator();
   
-  BotpackConsole.section("Loading Events");
+  ioa39rkdevbot.section("Loading Events");
   const eventsDir = path.join(__dirname, "modules", "events");
   const events = new Map();
 
@@ -91,7 +91,7 @@ async function loadModules() {
 
   const eventFiles = fs.readdirSync(eventsDir).filter(f => f.endsWith(".js"));
   
-  const eventSpinner = BotpackConsole.spinner(`Loading ${eventFiles.length} event files...`);
+  const eventSpinner = ioa39rkdevbot.spinner(`Loading ${eventFiles.length} event files...`);
   
   for (let i = 0; i < eventFiles.length; i++) {
     const file = eventFiles[i];
@@ -104,7 +104,7 @@ async function loadModules() {
       }
     } catch (err) {
       eventSpinner.stop();
-      BotpackConsole.error(
+      ioa39rkdevbot.error(
         `Failed to load event: ${file}`,
         err.message,
         "Check event file syntax and exports"
@@ -116,29 +116,29 @@ async function loadModules() {
   eventSpinner.stop();
   
   events.forEach((evt) => {
-    BotpackConsole.event(evt.name);
+    ioa39rkdevbot.event(evt.name);
   });
   
-  BotpackConsole.success(`Loaded ${events.size} events`);
+  ioa39rkdevbot.success(`Loaded ${events.size} events`);
   
   return { commands, events };
 }
 
 if (!hasAppState) {
-  BotpackConsole.separator();
+  ioa39rkdevbot.separator();
   
   loadModules().then(() => {
-    BotpackConsole.separator();
-    BotpackConsole.systemInfo();
-    BotpackConsole.warning(
+    ioa39rkdevbot.separator();
+    ioa39rkdevbot.systemInfo();
+    ioa39rkdevbot.warning(
       "Bot is in offline mode - No Facebook connection",
       "Add appstate.json to enable Facebook Messenger functionality"
     );
-    BotpackConsole.separator();
+    ioa39rkdevbot.separator();
   });
 } else {
-  BotpackConsole.info("Logging in...");
-  BotpackConsole.separator();
+  ioa39rkdevbot.info("Logging in...");
+  ioa39rkdevbot.separator();
 
   login(credentials, {
     online: true,
@@ -147,7 +147,7 @@ if (!hasAppState) {
     randomUserAgent: false
   }, async (err, api) => {
     if (err) {
-      BotpackConsole.error(
+      ioa39rkdevbot.error(
         "Login failed",
         err.message,
         "Check appstate.json validity or regenerate Facebook credentials"
@@ -155,25 +155,25 @@ if (!hasAppState) {
       
       await loadModules();
       
-      BotpackConsole.separator();
-      BotpackConsole.systemInfo();
-      BotpackConsole.warning(
+      ioa39rkdevbot.separator();
+      ioa39rkdevbot.systemInfo();
+      ioa39rkdevbot.warning(
         "Bot loaded but not connected to Facebook",
         "Fix appstate.json and restart to enable messaging"
       );
-      BotpackConsole.separator();
+      ioa39rkdevbot.separator();
       return;
     }
 
-    BotpackConsole.login(api.getCurrentUserID());
-    BotpackConsole.separator();
+    ioa39rkdevbot.login(api.getCurrentUserID());
+    ioa39rkdevbot.separator();
 
     const { commands, events } = await loadModules();
 
-    BotpackConsole.separator();
-    BotpackConsole.systemInfo();
-    BotpackConsole.success("Bot is ready and listening for messages!");
-    BotpackConsole.separator();
+    ioa39rkdevbot.separator();
+    ioa39rkdevbot.systemInfo();
+    ioa39rkdevbot.success("Bot is ready and listening for messages!");
+    ioa39rkdevbot.separator();
 
     const PREFIX = config.prefix;
     const userCooldowns = new Map();
@@ -217,7 +217,7 @@ if (!hasAppState) {
 
           userCooldowns.set(cooldownKey, now);
 
-          BotpackConsole.executing(commandName, event.senderID);
+          ioa39rkdevbot.executing(commandName, event.senderID);
 
           const reply = (message) => {
             return api.sendMessage(message, event.threadID, event.messageID);
@@ -232,7 +232,7 @@ if (!hasAppState) {
           try {
             await command.run(api, event, args, reply, react);
           } catch (error) {
-            BotpackConsole.error(
+            ioa39rkdevbot.error(
               `Command execution failed: ${commandName}`,
               error.message,
               `Check the ${commandName} command implementation`
@@ -253,7 +253,7 @@ if (!hasAppState) {
             try {
               await welcomeEvent.execute({ api, event, config });
             } catch (error) {
-              BotpackConsole.error(
+              ioa39rkdevbot.error(
                 "Welcome event failed",
                 error.message,
                 "Check welcome.js implementation"
@@ -265,7 +265,7 @@ if (!hasAppState) {
             try {
               await jointnotiEvent.execute({ api, event, config });
             } catch (error) {
-              BotpackConsole.error(
+              ioa39rkdevbot.error(
                 "Join notification event failed",
                 error.message,
                 "Check jointnoti.js implementation"
@@ -279,7 +279,7 @@ if (!hasAppState) {
             try {
               await leavenotiEvent.execute({ api, event, config });
             } catch (error) {
-              BotpackConsole.error(
+              ioa39rkdevbot.error(
                 "Leave notification event failed",
                 error.message,
                 "Check leavenoti.js implementation"
@@ -294,7 +294,7 @@ if (!hasAppState) {
         try {
           await alldlEvent.execute({ api, event, config });
         } catch (error) {
-          BotpackConsole.error(
+          ioa39rkdevbot.error(
             "Auto-download event failed",
             error.message,
             "Check alldl.js implementation"

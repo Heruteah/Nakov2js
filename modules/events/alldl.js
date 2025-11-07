@@ -31,8 +31,8 @@ module.exports = {
       if (!detectedUrl) return;
       
       // Log download attempt
-      const BotpackConsole = require("../../utils/console");
-      BotpackConsole.download(platform, event.senderID);
+      const ioa39rkdevbot = require("../../utils/console");
+      ioa39rkdevbot.download(platform, event.senderID);
       
       // Send processing message (without reply to get message object back)
       const processingMsg = await api.sendMessage(

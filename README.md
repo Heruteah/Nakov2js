@@ -2,7 +2,7 @@
 
 A beautiful, modular Facebook Messenger bot with elegant Unicode styling, real-time web dashboard, and intelligent automation features.
 
-**Developer**: [ioa39rkdev](https://facebook.com/ioa39rkdev)
+**Developer**: [ioa39rkdev](https://www.facebook.com/ioa39rkdev.00)
 
 ---
 

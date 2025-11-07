@@ -1,3 +1,5 @@
+const { format, FontSystem } = require('cassidy-styler');
+
 module.exports = {
   config: {
     name: "prefix",
@@ -9,7 +11,16 @@ module.exports = {
   },
   run: async (api, event, args, reply, react) => {
     const config = require("../../config.json");
-    const message = `📌 Current prefix: ${config.prefix}\n\nUse ${config.prefix}help to see available commands.`;
+    
+    const content = `${FontSystem.applyFonts('Current prefix:', 'fancy')} ${FontSystem.applyFonts(config.prefix, 'bold')}\n\n${FontSystem.applyFonts('Use', 'fancy')} ${FontSystem.applyFonts(config.prefix + 'help', 'typewriter')} ${FontSystem.applyFonts('to see available commands.', 'fancy')}`;
+    
+    const message = format({
+      title: '📌 Prefix Information',
+      titleFont: 'bold',
+      content: content,
+      contentFont: 'none'
+    });
+    
     reply(message);
   }
 };

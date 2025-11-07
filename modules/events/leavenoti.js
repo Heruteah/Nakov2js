@@ -1,3 +1,5 @@
+const { format, FontSystem } = require('cassidy-styler');
+
 module.exports = {
   name: "leavenoti",
   execute: async ({ api, event, config }) => {
@@ -20,7 +22,12 @@ module.exports = {
         console.error("Error getting user info:", err);
       }
 
-      const leaveMessage = `👋 ${userName} has left the group. Goodbye! 😢`;
+      const leaveMessage = format({
+        title: `👋 ${userName}`,
+        titleFont: 'bold',
+        content: `${FontSystem.applyFonts('has left the group. Goodbye!', 'fancy')} 😢`,
+        contentFont: 'none'
+      });
       
       await api.sendMessage(leaveMessage, threadID);
     } catch (error) {

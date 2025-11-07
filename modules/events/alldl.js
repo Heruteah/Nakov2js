@@ -1,6 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const { FontSystem } = require('cassidy-styler');
 
 module.exports = {
   name: "alldl",
@@ -36,7 +37,7 @@ module.exports = {
       
       // Send processing message (without reply to get message object back)
       const processingMsg = await api.sendMessage(
-        `📥 Detected ${platform} link! Downloading video...`,
+        `📥 ${FontSystem.applyFonts('Detected', 'fancy')} ${FontSystem.applyFonts(platform, 'bold')} ${FontSystem.applyFonts('link! Downloading video...', 'fancy')}`,
         event.threadID
       );
       
@@ -50,7 +51,7 @@ module.exports = {
         if (!response.data || !response.data.status || !response.data.data || !response.data.data.videoUrl) {
           if (processingMsg && processingMsg.messageID) {
             api.editMessage(
-              `❌ Failed to download ${platform} video. Please try again later.`,
+              `❌ ${FontSystem.applyFonts('Failed to download', 'fancy')} ${FontSystem.applyFonts(platform, 'bold')} ${FontSystem.applyFonts('video. Please try again later.', 'fancy')}`,
               processingMsg.messageID,
               event.threadID
             );
@@ -77,7 +78,7 @@ module.exports = {
         // Send the video
         await api.sendMessage(
           {
-            body: `✅ Downloaded ${detectedPlatform} video successfully!`,
+            body: `✅ ${FontSystem.applyFonts('Downloaded', 'fancy')} ${FontSystem.applyFonts(detectedPlatform, 'bold')} ${FontSystem.applyFonts('video successfully!', 'fancy')} 🎉`,
             attachment: fs.createReadStream(videoPath)
           },
           event.threadID,
@@ -111,13 +112,13 @@ module.exports = {
         // Update or send error message
         if (processingMsg && processingMsg.messageID) {
           api.editMessage(
-            `❌ Error downloading ${platform} video: ${error.message}`,
+            `❌ ${FontSystem.applyFonts('Error downloading', 'fancy')} ${FontSystem.applyFonts(platform, 'bold')} ${FontSystem.applyFonts('video:', 'fancy')} ${error.message}`,
             processingMsg.messageID,
             event.threadID
           );
         } else {
           api.sendMessage(
-            `❌ Error downloading ${platform} video: ${error.message}`,
+            `❌ ${FontSystem.applyFonts('Error downloading', 'fancy')} ${FontSystem.applyFonts(platform, 'bold')} ${FontSystem.applyFonts('video:', 'fancy')} ${error.message}`,
             event.threadID,
             event.messageID
           );

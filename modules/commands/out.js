@@ -27,14 +27,24 @@ module.exports = {
       const goodbyeMessage = format({
         title: '👋 Goodbye!',
         titleFont: 'bold',
-        content: `${FontSystem.applyFonts('The bot is leaving this thread. Thanks for using me!', 'fancy')} 💫`,
+        content: `${FontSystem.applyFonts('The bot is leaving this thread. Thanks for using me!', 'fancy')} 💫\n\n${FontSystem.applyFonts('Note:', 'bold')} ${FontSystem.applyFonts('If the bot doesn\'t leave automatically, please remove it manually from the group settings.', 'fancy')}`,
         contentFont: 'none'
       });
       
       await reply(goodbyeMessage);
       
       setTimeout(() => {
-        api.removeUserFromGroup(api.getCurrentUserID(), event.threadID);
+        try {
+          if (typeof api.removeUserFromGroup === 'function') {
+            api.removeUserFromGroup(api.getCurrentUserID(), event.threadID, (err) => {
+              if (err) console.error('Error leaving thread:', err);
+            });
+          } else {
+            console.log('removeUserFromGroup method not available in this FCA version');
+          }
+        } catch (err) {
+          console.error('Error attempting to leave thread:', err);
+        }
       }, 2000);
       
     } catch (err) {

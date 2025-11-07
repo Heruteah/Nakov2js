@@ -23,24 +23,23 @@ module.exports = {
     for (const [name, cmd] of commands) {
       const cmdConfig = cmd.config;
       const prefix = cmdConfig.prefix ? config.prefix : "";
-      const description = cmdConfig.description || "No description";
       
       if (cmdConfig.prefix) {
-        prefixCommands.push(`  ${FontSystem.applyFonts(prefix + name, 'typewriter')} - ${description}`);
+        prefixCommands.push(`  ${FontSystem.applyFonts(prefix + name, 'typewriter')}`);
       } else {
-        noPrefixCommands.push(`  ${FontSystem.applyFonts(name, 'typewriter')} - ${description}`);
+        noPrefixCommands.push(`  ${FontSystem.applyFonts(name, 'typewriter')}`);
       }
     }
     
     let content = '';
     
     if (prefixCommands.length > 0) {
-      content += FontSystem.applyFonts('✅ Prefix Commands:', 'fancy') + '\n';
+      content += FontSystem.applyFonts('📋 USE PREFIX', 'fancy') + '\n';
       content += prefixCommands.join('\n') + '\n\n';
     }
     
     if (noPrefixCommands.length > 0) {
-      content += FontSystem.applyFonts('❎ No Prefix', 'fancy') + '\n';
+      content += FontSystem.applyFonts('📋 NO PREFIX', 'fancy') + '\n';
       content += noPrefixCommands.join('\n') + '\n\n';
     }
     

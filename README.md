@@ -141,43 +141,6 @@ All responses follow a consistent structure:
 
 ---
 
-## 📁 Project Structure
-
-```
-facebook-messenger-bot/
-├── index.js                    # Main bot entry point
-├── config.json                 # Bot configuration
-├── appstate.json              # Facebook session cookies (gitignored)
-├── package.json               # Dependencies
-├── README.md                  # This file
-├── replit.md                  # Technical documentation
-│
-├── utils/
-│   └── console.js             # ioa39rkdevbot console class (styled output)
-│
-├── web-console/
-│   └── server.js              # Web dashboard server (SSE, real-time logs)
-│
-├── modules/
-│   ├── commands/              # Command modules
-│   │   ├── ai.js             # GPT-5 AI chat (no prefix)
-│   │   ├── help.js           # Command list (prefix)
-│   │   ├── poli.js           # AI image generation (prefix)
-│   │   ├── prefix.js         # Show prefix (no prefix)
-│   │   ├── uid.js            # Get user ID (prefix)
-│   │   └── uptime.js         # Runtime stats (prefix)
-│   │
-│   └── events/               # Event handlers
-│       ├── alldl.js          # Auto-download videos
-│       ├── jointnoti.js      # Bot join notification
-│       ├── leavenoti.js      # Leave notification
-│       └── welcome.js        # Welcome new members
-│
-└── temp/                     # Temporary files (auto-created)
-```
-
----
-
 ## 🛠️ Creating Custom Commands
 
 ### Command Template
